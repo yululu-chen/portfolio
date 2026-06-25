@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 质检系统 — 陈雨露</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8e8;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --tag-bg: #f0f0f0;
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    .back-nav { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .back-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .back-link:hover { color: var(--text-primary); }
+
+    .project-header { padding: 56px 0 40px; border-bottom: 1px solid var(--border); }
+
+    .project-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+
+    .tag { font-size: 11px; background: var(--tag-bg); color: var(--text-secondary); padding: 3px 10px; border-radius: 20px; }
+    .project-date { font-size: 12px; color: var(--text-muted); }
+
+    .project-title { font-size: clamp(22px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+
+    .project-summary { font-size: 16px; color: var(--text-secondary); max-width: 560px; line-height: 1.7; }
+
+    .metrics-row { display: flex; gap: 32px; padding: 32px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .metric { flex: 1; min-width: 100px; }
+    .metric-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 12px; color: var(--text-muted); }
+
+    .content-section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+
+    .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+
+    .content-text { font-size: 15px; color: var(--text-secondary); line-height: 1.8; max-width: 600px; }
+    .content-text p + p { margin-top: 14px; }
+
+    .preview-wrapper { width: 100%; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 8px; background: var(--surface); }
+    .preview-placeholder { height: 320px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; color: var(--text-muted); font-size: 14px; background: var(--surface); }
+    .preview-placeholder .icon { font-size: 32px; opacity: 0.3; }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step { display: flex; gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); }
+    .process-step:first-child { border-top: none; }
+    .step-num { font-size: 12px; color: var(--text-muted); width: 24px; flex-shrink: 0; padding-top: 2px; }
+    .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    .disclaimer { display: flex; gap: 10px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-top: 16px; }
+    .disclaimer-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .disclaimer-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    footer { padding: 32px 0 48px; font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="back-nav">
+    <div class="container">
+      <a class="back-link" href="../index.html">← 返回主页</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="project-header">
+      <div class="project-meta-row">
+        <span class="tag">AI 质检</span>
+        <span class="tag">0→1</span>
+        <span class="tag">LLM</span>
+        <span class="project-date">2024 · 核桃编程</span>
+      </div>
+      <h1 class="project-title">AI 质检系统</h1>
+      <p class="project-summary">
+        公司此前依赖人工随机抽查，覆盖率低、标准不一。从 0 到 1 深度参与 AI 质检能力落地，工单扫描量提升 15 倍，实现从抽检到全量覆盖的跨越。
+      </p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value">15×</div>
+        <div class="metric-label">工单扫描量提升</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">100%</div>
+        <div class="metric-label">高压线违规 AI 覆盖</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">抽检→全量</div>
+        <div class="metric-label">质检覆盖跨越</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Product Preview</p>
+      <div class="preview-wrapper">
+        <div class="preview-placeholder">
+          <div class="icon">▤</div>
+          <div>产品截图（脱敏后）</div>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <div class="disclaimer-icon">ⓘ</div>
+        <div class="disclaimer-text">截图中所有数字、用户名、会话内容均已脱敏或替换为虚构数据，不代表任何真实业务数据。</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Background</p>
+      <div class="content-text">
+        <p>核桃编程的销售顾问与家长沟通时，存在「过度承诺」「虚假承诺」等合规风险。此前没有质检系统，质检动作完全依赖人工随机抽查，每天处理量有限，覆盖率极低，且不同质检员的判断标准不一。</p>
+        <p>问题暴露往往滞后，违规被发现时已产生实际投诉或退款风险。管理层需要一套能够规模化、标准化的质检能力，同时不大幅增加人力成本。</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">My Process</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">场景定义与优先级排序</div>
+            <div class="step-desc">梳理所有违规场景，与业务、法务对齐定义，将「过度承诺、虚假承诺」列为首期落地场景——合规风险最高，同时话术模式相对固定，更适合 AI 识别。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">规则引擎与路由策略设计</div>
+            <div class="step-desc">设计关键词规则引擎 + LLM 路由匹配策略：命中规则的工单优先进入 AI 质检，降低误判率；同时为模型迭代设计反哺机制，人工复核结果自动回流训练数据。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">AI + 人工交叉复审闭环</div>
+            <div class="step-desc">针对 AI 质检与人工判断存在差异的问题，设计「AI 质检 → 人工交叉复审 → 管理层裁决」三级机制，既控制误判风险，又沉淀标准、持续提升模型准确率。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">灰度上线与效果验证</div>
+            <div class="step-desc">分批次灰度，对比 AI 质检与人工抽查在命中率、误判率上的差异，数据稳定后全量铺开。高压线、红线类违规全部纳入 AI 质检 + 人工复核双重保障。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Reflection</p>
+      <div class="content-text">
+        <p>这个项目最大的挑战不是技术，而是「定义标准」。什么叫过度承诺？边界在哪里？这个问题在业务、法务、一线之间存在大量分歧，花了很长时间对齐。事后来看，这个对齐过程本身就是质检系统能跑通的基础——模型只是执行标准，标准模糊时再好的模型也没用。</p>
+        <p>如果重来，我会更早引入一线质检员参与规则制定，而不是产品和法务定完再同步。他们对边界案例的判断经验，是规则文档里没有的。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <a href="../index.html" style="color:inherit;text-decoration:none;">← 返回作品集主页</a>
+      &emsp;·&emsp;© 2025 陈雨露
+    </div>
+  </footer>
+
+</body>
+</html>
