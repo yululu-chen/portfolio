@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>电访质量分析 — 陈雨露</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8e8;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --tag-bg: #f0f0f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    .back-nav { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .back-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .back-link:hover { color: var(--text-primary); }
+
+    .project-header { padding: 56px 0 40px; border-bottom: 1px solid var(--border); }
+    .project-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .tag { font-size: 11px; background: var(--tag-bg); color: var(--text-secondary); padding: 3px 10px; border-radius: 20px; }
+    .project-date { font-size: 12px; color: var(--text-muted); }
+    .project-title { font-size: clamp(22px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .project-summary { font-size: 16px; color: var(--text-secondary); max-width: 560px; line-height: 1.7; }
+
+    .metrics-row { display: flex; gap: 32px; padding: 32px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .metric { flex: 1; min-width: 100px; }
+    .metric-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 12px; color: var(--text-muted); }
+
+    .content-section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+    .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+
+    .content-text { font-size: 15px; color: var(--text-secondary); line-height: 1.8; max-width: 600px; }
+    .content-text p + p { margin-top: 14px; }
+
+    /* iframe 预览 */
+    .preview-wrapper {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 8px;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .preview-wrapper iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+      display: block;
+    }
+
+    .preview-expand-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: none;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      transition: color 0.15s;
+      text-decoration: none;
+    }
+    .preview-expand-btn:hover { color: var(--text-primary); }
+
+    .disclaimer { display: flex; gap: 10px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-top: 16px; }
+    .disclaimer-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .disclaimer-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step { display: flex; gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); }
+    .process-step:first-child { border-top: none; }
+    .step-num { font-size: 12px; color: var(--text-muted); width: 24px; flex-shrink: 0; padding-top: 2px; }
+    .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    footer { padding: 32px 0 48px; font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="back-nav">
+    <div class="container">
+      <a class="back-link" href="../index.html">← 返回主页</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="project-header">
+      <div class="project-meta-row">
+        <span class="tag">AI 分析</span>
+        <span class="tag">ASR</span>
+        <span class="tag">0→1</span>
+        <span class="project-date">2024 · 核桃编程</span>
+      </div>
+      <h1 class="project-title">电访质量分析</h1>
+      <p class="project-summary">
+        老师跨多系统查询电访与企微内容，操作碎片化，沟通记录难以回溯。主导整合全渠道沟通数据，接入 AI 摘要与 ASR 转写，查询动线从 5 步压缩至 2 步，电访返检率提升 7%+。
+      </p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value">5→2步</div>
+        <div class="metric-label">查询操作动线</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">+7%</div>
+        <div class="metric-label">电访返检率</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">全渠道</div>
+        <div class="metric-label">沟通数据整合</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Product Demo</p>
+      <div class="preview-wrapper">
+        <iframe
+          src="../assets/课堂直播质量分析-9c9d962b.html"
+          title="电访质量分析 Demo"
+          sandbox="allow-scripts allow-same-origin"
+        ></iframe>
+        <a class="preview-expand-btn" href="../assets/课堂直播质量分析-9c9d962b.html" target="_blank">
+          在新窗口中打开完整 Demo ↗
+        </a>
+      </div>
+      <div class="disclaimer">
+        <div class="disclaimer-icon">ⓘ</div>
+        <div class="disclaimer-text">Demo 中所有姓名、课程名称、对话内容均为虚构数据，仅用于展示产品交互形态，不代表任何真实业务数据。</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Background</p>
+      <div class="content-text">
+        <p>老师在跟进学员时，需要分别登录电话系统查通话记录、登录企微查聊天记录，两个系统之间没有关联，操作路径长，沟通记录难以完整回溯。</p>
+        <p>管理层想了解电访质量，但系统只有粗粒度的通时通次数据，无法判断通话内容好不好、哪些环节有问题。问题发现滞后，老师行为改进也缺乏具体依据。</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">My Process</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">整合沟通数据，统一时间线视图</div>
+            <div class="step-desc">将电话记录和企微消息按时间线合并展示，一个界面内看清完整的师生沟通轨迹，消除跨系统切换的操作成本。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">接入 ASR 转写 + AI 摘要</div>
+            <div class="step-desc">电话录音通过 ASR 自动转成文字，再由 AI 生成分段摘要和关键信息切片，管理层不需要听完整录音就能快速定位问题片段。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">补充师生课堂行为数据维度</div>
+            <div class="step-desc">在通话分析之外，引入课堂互动行为数据（上台次数、发言密度、金币发放等），丰富老师沟通质量的评估维度，让管理层有更多抓手。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">设计评价与反馈流程</div>
+            <div class="step-desc">在详情页内嵌入质检评价入口，支持管理层直接对具体片段标注「干的漂亮」或「有待改进」，评价结果可选择通知到老师本人，形成反馈闭环。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Reflection</p>
+      <div class="content-text">
+        <p>这个项目让我意识到「整合」本身就是很大的价值——用户之前不是不想分析，而是光把数据找全就已经耗尽精力了。把操作路径从 5 步压到 2 步，比新增任何功能带来的反馈都要强烈。</p>
+        <p>ASR 转写的准确率在初期是个隐患，方言和口语化表达经常出错，导致 AI 摘要也受影响。如果重来，我会更早在产品里加入人工纠错入口，而不是等准确率问题积累成用户投诉再处理。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <a href="../index.html" style="color:inherit;text-decoration:none;">← 返回作品集主页</a>
+      &emsp;·&emsp;© 2025 陈雨露
+    </div>
+  </footer>
+
+</body>
+</html>
