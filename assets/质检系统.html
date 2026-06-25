@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>质检系统</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;font-size:13px;background:#f0f2f5;display:flex;justify-content:center;padding:20px;min-height:100vh}
+.app{display:flex;flex-direction:column;height:740px;width:1260px;overflow:hidden;border-radius:10px;border:1px solid #e0e0e0;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+
+/* topbar */
+.topbar{height:48px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;flex-shrink:0;padding:0 0 0 0}
+.logo-wrap{width:200px;display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid rgba(0,0,0,.08);height:100%;flex-shrink:0}
+.logo-box{width:22px;height:22px;background:#1677ff;border-radius:5px;display:flex;align-items:center;justify-content:center}
+.logo-box i{color:#fff;font-size:13px}
+.logo-text{font-size:14px;font-weight:500;color:#262626}
+.top-right{flex:1;display:flex;align-items:center;padding:0 20px;gap:10px}
+.search-box{height:30px;border:1px solid #d9d9d9;border-radius:6px;display:flex;align-items:center;padding:0 10px;gap:6px;color:#8c8c8c;font-size:12px;width:200px;cursor:text}
+
+/* layout */
+.body-wrap{display:flex;flex:1;overflow:hidden}
+.sidenav{width:200px;border-right:1px solid rgba(0,0,0,.08);background:#fff;flex-shrink:0;overflow-y:auto;padding:8px 0}
+.nsec{padding:10px 16px 4px;font-size:11px;color:#bfbfbf;font-weight:500;letter-spacing:.04em}
+.ni{padding:8px 16px;cursor:pointer;font-size:13px;color:#595959;display:flex;align-items:center;justify-content:space-between;position:relative;transition:background .1s}
+.ni:hover{background:#f5f5f5}
+.ni.on{color:#1677ff;background:#e6f4ff;font-weight:500}
+.ni.on::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;background:#1677ff;border-radius:0 2px 2px 0}
+.bdg{background:#ff4d4f;color:#fff;border-radius:100px;padding:0 6px;font-size:11px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;background:#fff}
+
+/* page switching */
+.page{display:none;flex-direction:column;flex:1;overflow:hidden}
+.page.on{display:flex}
+
+/* common */
+.toolbar{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0;flex-wrap:wrap}
+.sel{height:28px;border:1px solid #d9d9d9;border-radius:6px;padding:0 8px;font-size:12px;color:#595959;background:#fff;cursor:pointer;outline:none;min-width:90px}
+.sel:hover{border-color:#1677ff}
+.finp{height:28px;border:1px solid #d9d9d9;border-radius:6px;padding:0 8px;font-size:12px;font-family:inherit;outline:none}
+.finp:focus{border-color:#1677ff}
+.ml{margin-left:auto}
+.btn{height:28px;padding:0 12px;border-radius:6px;font-size:12px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:4px;font-family:inherit;transition:all .12s;white-space:nowrap}
+.bp{background:#1677ff;color:#fff}.bp:hover{background:#0958d9}
+.bd2{background:#fff;border:1px solid #d9d9d9;color:#595959}.bd2:hover{border-color:#1677ff;color:#1677ff}
+.bl{background:none;border:none;color:#1677ff;font-size:12px;cursor:pointer;padding:0 2px;font-family:inherit}.bl:hover{text-decoration:underline}
+.bl.dr{color:#ff4d4f}
+.tblw{flex:1;overflow-y:auto;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{padding:10px 12px;text-align:left;background:#fafafa;color:#8c8c8c;font-weight:500;border-bottom:1px solid rgba(0,0,0,.08);font-size:12px;position:sticky;top:0;z-index:1;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06);color:#595959;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.pg{display:flex;align-items:center;padding:10px 20px;gap:4px;background:#fff;border-top:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.pginfo{font-size:12px;color:#8c8c8c;margin-right:8px}
+.pgb{width:28px;height:28px;border:1px solid #d9d9d9;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#595959}
+.pgb:hover{border-color:#1677ff;color:#1677ff}
+.pgb.on{background:#1677ff;color:#fff;border-color:#1677ff}
+.tag{display:inline-flex;align-items:center;padding:1px 8px;border-radius:4px;font-size:12px;font-weight:500;white-space:nowrap}
+.ty{background:#fffbe6;color:#d48806;border:1px solid #ffe58f}
+.tr2{background:#fff2f0;color:#cf1322;border:1px solid #ffa39e}
+.tb2{background:#e6f4ff;color:#0958d9;border:1px solid #91caff}
+.tg2{background:#f5f5f5;color:#595959;border:1px solid #d9d9d9}
+.to{background:#fff7e6;color:#d46b08;border:1px solid #ffd591}
+
+/* type tabs (质检标准顶部) */
+.type-tabs{display:flex;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);padding:0 20px;flex-shrink:0}
+.tt{padding:12px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#8c8c8c;margin-bottom:-1px;transition:all .15s}
+.tt.on{color:#1677ff;border-bottom-color:#1677ff;font-weight:500}
+.tt:hover:not(.on){color:#262626}
+.pane{display:none;flex:1;overflow:hidden}
+.pane.show{display:flex}
+.three-col{display:flex;flex:1;overflow:hidden;width:100%}
+.tree-col{width:200px;border-right:1px solid rgba(0,0,0,.08);background:#fff;flex-shrink:0;overflow-y:auto}
+.tn{padding:8px 12px 8px 14px;cursor:pointer;font-size:12.5px;color:#595959;display:flex;align-items:center;gap:5px;transition:background .1s}
+.tn:hover{background:#f5f5f5}
+.tn.on{color:#1677ff;background:#e6f4ff;font-weight:500}
+.tn.sub{padding-left:26px;font-size:12px}
+.tn .ei{margin-left:auto;opacity:0;font-size:12px;color:#1677ff}
+.tn:hover .ei{opacity:1}
+.tbl-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tbl-head{background:#fff;border-bottom:1px solid rgba(0,0,0,.08);padding:14px 20px 12px;flex-shrink:0}
+.tbl-title{font-size:15px;font-weight:500;color:#262626}
+.spec-col{display:flex;flex:1;overflow:hidden;flex-direction:column;width:100%}
+.sst-bar{display:flex;gap:6px;padding:10px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.sst{height:28px;padding:0 16px;border-radius:100px;font-size:12.5px;cursor:pointer;border:1px solid #d9d9d9;color:#8c8c8c;background:#fff;font-family:inherit}
+.sst.on{background:#1677ff;color:#fff;border-color:#1677ff}
+.spane{display:none;flex-direction:column;flex:1;overflow:hidden}
+.spane.show{display:flex}
+
+/* 质检规则 */
+.rule-card{width:220px;border:1px solid #e8e8e8;border-radius:8px;padding:14px 16px;background:#fff;transition:box-shadow .15s;cursor:default}
+.rule-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.rc-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.rc-title{font-size:13px;font-weight:500;color:#262626}
+.rc-status{font-size:11.5px;padding:1px 8px;border-radius:100px}
+.st-on{color:#52c41a;background:#f6ffed;border:1px solid #b7eb8f}
+.st-off{color:#8c8c8c;background:#f5f5f5;border:1px solid #d9d9d9}
+.rc-meta{font-size:12px;color:#8c8c8c;margin-bottom:10px}
+.rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:12px}
+.rc-stat{font-size:12px;color:#595959}
+.rc-stat span{font-weight:500;color:#262626}
+.cards-area{flex:1;overflow-y:auto;padding:20px;display:flex;gap:16px;flex-wrap:wrap;align-content:flex-start;background:#f5f7fa}
+.per-page{height:28px;border:1px solid #d9d9d9;border-radius:6px;padding:0 8px;font-size:12px;color:#595959;background:#fff;cursor:pointer;outline:none}
+
+/* 会话关键词 */
+.role-bar-kw{display:flex;align-items:center;gap:6px;padding:12px 20px 0;flex-shrink:0;background:#fff}
+.rbtn{height:28px;padding:0 14px;border-radius:6px;font-size:12.5px;cursor:pointer;border:1px solid #d9d9d9;font-family:inherit;background:#fff;color:#595959}
+.rbtn.on{background:#1677ff;color:#fff;border-color:#1677ff}
+.kw-page-title{font-size:15px;font-weight:500;color:#262626;padding:10px 20px 0;background:#fff;flex-shrink:0}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:8px;color:#bfbfbf}
+.empty-state i{font-size:40px;opacity:.4}
+.empty-state p{font-size:13px}
+.add-inline-row{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px dashed #d9d9d9;border-radius:6px;cursor:pointer;color:#1677ff;font-size:12.5px;transition:border-color .15s}
+.add-inline-row:hover{border-color:#1677ff;background:#f0f7ff}
+
+/* 任务明细筛选区 */
+.filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 16px;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.fg-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#595959}
+.fg-label{white-space:nowrap;flex-shrink:0;font-size:12.5px}
+.fg-input{flex:1;height:28px;border:1px solid #d9d9d9;border-radius:6px;padding:0 8px;font-size:12px;font-family:inherit;outline:none;min-width:0}
+.fg-input:focus{border-color:#1677ff}
+.fg-sel{flex:1;height:28px;border:1px solid #d9d9d9;border-radius:6px;padding:0 8px;font-size:12px;font-family:inherit;outline:none;background:#fff;min-width:0;cursor:pointer}
+.fg-sel:hover{border-color:#1677ff}
+.filter-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:0 20px 12px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.collapse-link{font-size:12px;color:#1677ff;cursor:pointer;display:flex;align-items:center;gap:2px;background:none;border:none;font-family:inherit}
+.sub-tabs-bar{display:flex;align-items:center;padding:0 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.stab{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#8c8c8c;margin-bottom:-1px;transition:all .15s}
+.stab.on{color:#1677ff;border-bottom-color:#1677ff;font-weight:500}
+.tbl-actions-right{margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 0}
+.sort-icon{font-size:11px;color:#bfbfbf;vertical-align:middle;margin-left:2px}
+
+/* 抽屉 */
+.ov{position:absolute;inset:0;background:rgba(0,0,0,.3);z-index:50;display:none}
+.ov.open{display:block}
+.drw{position:absolute;right:0;top:0;bottom:0;width:640px;background:#fff;border-left:1px solid #e0e0e0;z-index:51;transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column}
+.drw.open{transform:translateX(0)}
+.dh{padding:14px 20px;border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.df{padding:12px 20px;border-top:1px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;flex-shrink:0;background:#fafafa}
+.dtabs{display:flex;background:#f0f0f0;border-radius:8px;padding:3px;margin:14px 20px 0;flex-shrink:0}
+.dtab{flex:1;text-align:center;padding:6px 0;font-size:13px;cursor:pointer;border-radius:6px;color:#595959;transition:all .15s}
+.dtab.on{background:#fff;color:#262626;font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.dpanel{display:none;flex:1;overflow-y:auto;padding:16px 20px}
+.dpanel.show{display:block}
+.tip2{display:flex;gap:7px;padding:9px 12px;background:#f0f7ff;border-radius:6px;border-left:3px solid #1677ff;font-size:12px;color:#0958d9;line-height:1.6;margin-bottom:14px}
+.tip2 i{font-size:13px;flex-shrink:0;margin-top:1px}
+.dim-block{margin-bottom:16px}
+.dim-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dim-label{font-size:13px;font-weight:500;color:#262626}
+.dim-count{font-size:12px;color:#8c8c8c}
+.it2{width:100%;border-collapse:collapse;font-size:12.5px}
+.it2 th{padding:7px 10px;background:#fafafa;color:#8c8c8c;border-bottom:1px solid rgba(0,0,0,.08);font-weight:500;text-align:left;font-size:12px}
+.it2 td{padding:7px 10px;border-bottom:1px solid rgba(0,0,0,.06);color:#595959;vertical-align:middle}
+.it2 tr:last-child td{border-bottom:none}
+.it2 tr:hover td{background:#fafbff}
+.it2 input[type=text]{border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12.5px;font-family:inherit;outline:none;width:100%;background:#fff}
+.it2 input[type=text]:focus{border-color:#1677ff}
+.it2 select{border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;outline:none;background:#fff;cursor:pointer}
+.it2 select:focus{border-color:#1677ff}
+.add-row-btn{display:flex;align-items:center;gap:5px;font-size:12.5px;color:#1677ff;cursor:pointer;padding:7px 0 2px;border:none;background:none;font-family:inherit}
+.add-row-btn:hover{opacity:.8}
+.ctx-cond{display:flex;flex-direction:column;gap:4px}
+.ctx-cond-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.ctx-cond-label{color:#8c8c8c;width:52px;flex-shrink:0;font-size:11.5px}
+.ctx-cond-input{flex:1;border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;outline:none}
+.ctx-cond-input:focus{border-color:#1677ff}
+.wl-content-input{border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12.5px;font-family:inherit;outline:none;width:100%}
+.wl-content-input:focus{border-color:#1677ff}
+.abox{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:6px;font-size:12.5px;line-height:1.6;margin-bottom:12px}
+.as{background:#f6ffed;border:1px solid #b7eb8f;color:#237804}
+.abox i{font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* 质检规则弹窗 */
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:60;display:none;align-items:flex-start;justify-content:center;padding-top:30px}
+.modal-bg.open{display:flex}
+.modal{width:780px;background:#fff;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;max-height:88%}
+.mh{padding:16px 20px 14px;border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px}
+.mh-title{font-size:15px;font-weight:500;color:#262626;flex:1}
+.mh-badge{font-size:12px;font-weight:500;padding:2px 10px;border-radius:100px;background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f;white-space:nowrap}
+.mh-hint{font-size:12px;color:#8c8c8c;margin-left:4px}
+.mh-close{background:none;border:none;cursor:pointer;color:#8c8c8c;font-size:20px;padding:0;display:flex;align-items:center}
+.mb{flex:1;overflow-y:auto;padding:20px}
+.mf{padding:14px 20px;border-top:1px solid rgba(0,0,0,.08);display:flex;justify-content:flex-end;gap:10px;background:#fafafa}
+.sec-title{font-size:13.5px;font-weight:500;color:#262626;margin-bottom:14px}
+.form-grid{display:grid;gap:0 20px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.form-item{margin-bottom:16px}
+.form-label{font-size:12px;color:#595959;margin-bottom:5px;display:flex;align-items:center;gap:3px}
+.req{color:#ff4d4f}
+.form-sel{width:100%;height:34px;border:1px solid #d9d9d9;border-radius:6px;padding:0 10px;font-size:13px;color:#262626;background:#fff;outline:none;font-family:inherit;cursor:pointer}
+.form-sel:hover{border-color:#1677ff}
+.form-inp{width:100%;height:34px;border:1px solid #d9d9d9;border-radius:6px;padding:0 10px;font-size:13px;color:#262626;background:#fff;outline:none;font-family:inherit}
+.form-inp:focus{border-color:#1677ff}
+.form-dis .form-sel,.form-dis .form-inp{background:#f5f5f5;color:#8c8c8c;cursor:not-allowed;border-color:#e8e8e8;pointer-events:none}
+.form-dis .form-label{color:#8c8c8c}
+.dis-tip{font-size:11.5px;color:#bfbfbf;margin-top:3px;display:flex;align-items:center;gap:3px}
+.role-btn-dis{height:30px;padding:0 14px;border-radius:6px;font-size:13px;border:1px solid #e8e8e8;background:#f5f5f5;color:#bfbfbf;cursor:not-allowed;font-family:inherit}
+.role-btn-dis.on{background:#d4e6ff;color:#91caff;border-color:#d4e6ff}
+.tag-input{min-height:34px;border:1px solid #d9d9d9;border-radius:6px;padding:4px 8px;font-size:12.5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tag-input:focus-within{border-color:#1677ff}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;background:#e6f4ff;color:#0958d9;border:1px solid #91caff;border-radius:4px;padding:1px 7px;font-size:12px}
+.tag-chip i{font-size:10px;cursor:pointer;opacity:.7}
+.divider{border:none;border-top:1px solid rgba(0,0,0,.06);margin:4px 0 18px}
+.filter-block{border:1px solid #e8e8e8;border-radius:8px;padding:14px 16px;background:#fafafa;margin-top:4px}
+.filter-rule{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0f0}
+.filter-rule:last-child{border-bottom:none;padding-bottom:0}
+.filter-idx{width:18px;height:18px;border-radius:50%;background:#1677ff;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.filter-rule-text{font-size:12.5px;color:#595959;line-height:1.7}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:300;transform:translateY(12px);opacity:0;pointer-events:none;transition:all .2s;min-width:180px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.toast.show{transform:translateY(0);opacity:1}
+.tok{background:#52c41a;color:#fff}
+</style>
+</head>
+<body>
+<div class="app" id="APP">
+  <div class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-box"><i class="ti ti-shield-check"></i></div>
+      <span class="logo-text">质检系统</span>
+    </div>
+    <div class="top-right">
+      <div class="search-box"><i class="ti ti-search"></i><span>搜索问题…</span></div>
+    </div>
+  </div>
+
+  <div class="body-wrap">
+    <!-- 侧导航 -->
+    <nav class="sidenav" id="sidenav">
+      <div class="nsec">规则设置</div>
+      <div class="ni on" data-page="p-qcstd">质检标准</div>
+      <div class="ni" data-page="p-qcrule">质检规则</div>
+      <div class="ni" data-page="p-kw">会话关键词</div>
+      <div class="nsec">工单管理</div>
+      <div class="ni" data-page="p-task">任务明细</div>
+      <div class="ni">交叉检</div>
+      <div class="ni">质检工单</div>
+      <div class="ni">质检申诉</div>
+      <div class="ni">申诉工单 <span class="bdg">58</span></div>
+      <div class="nsec">复核管理</div>
+      <div class="ni">复核评分</div>
+      <div class="ni">复核申诉</div>
+      <div class="nsec">数据看板</div>
+      <div class="ni">质检业务看板</div>
+    </nav>
+
+    <div class="main">
+
+      <!-- ══════════════ PAGE: 质检标准 ══════════════ -->
+      <div class="page on" id="p-qcstd">
+        <div class="type-tabs">
+          <div class="tt on" id="tt-g" onclick="switchType('g')">一般问题类型</div>
+          <div class="tt" id="tt-s" onclick="switchType('s')">专项质检问题类型</div>
+        </div>
+        <div class="pane show" id="pane-g" style="flex-direction:row">
+          <div class="three-col">
+            <div class="tree-col">
+              <div class="tn on" id="tn-zy" onclick="selTn('zy','作业批改质量2.0版的叶子问题')"><i class="ti ti-chevron-down" style="font-size:11px;color:#bfbfbf"></i>作业批改质量2.0版<i class="ti ti-edit ei"></i></div>
+              <div class="tn sub" id="tn-z1" onclick="selTn('z1','批改准确性的叶子问题')">批改准确性<i class="ti ti-edit ei"></i></div>
+              <div class="tn sub" id="tn-z2" onclick="selTn('z2','批改完整性的叶子问题')">批改完整性<i class="ti ti-edit ei"></i></div>
+              <div class="tn sub" id="tn-z3" onclick="selTn('z3','批改时效的叶子问题')">批改时效<i class="ti ti-edit ei"></i></div>
+              <div class="tn" id="tn-qw" onclick="selTn('qw','企微会话质检标准2.0版的叶子问题')"><i class="ti ti-chevron-right" style="font-size:11px;color:#bfbfbf"></i>企微会话质检标准2.0版<i class="ti ti-edit ei"></i></div>
+              <div class="tn" id="tn-lk" onclick="selTn('lk','两课C++电访标准质检的叶子问题')"><i class="ti ti-chevron-right" style="font-size:11px;color:#bfbfbf"></i>两课C++电访标准质检<i class="ti ti-edit ei"></i></div>
+            </div>
+            <div class="tbl-col">
+              <div class="tbl-head"><div class="tbl-title" id="g-title">作业批改质量2.0版的叶子问题</div></div>
+              <div class="toolbar">
+                <select class="sel"><option>违规等级：全部</option><option>黄线违规</option><option>红线违规</option></select>
+                <input class="finp" style="width:140px" placeholder="搜索问题名称…">
+                <div class="ml"><button class="btn bp"><i class="ti ti-plus"></i>增加质检标准</button></div>
+              </div>
+              <div class="tblw">
+                <table>
+                  <thead><tr><th style="width:60px">id</th><th>问题名称</th><th style="width:100px">违规等级</th><th>问题描述</th><th style="width:60px">操作</th></tr></thead>
+                  <tbody>
+                    <tr><td style="color:#8c8c8c">76</td><td style="font-weight:500;color:#262626">批改准确性</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c">1、自动批改：在配置作业批改模版时…</td><td><button class="bl">编辑</button></td></tr>
+                    <tr><td style="color:#8c8c8c">77</td><td style="font-weight:500;color:#262626">批改完整性</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c">对学员提交的每道题目均应给出批改意见…</td><td><button class="bl">编辑</button></td></tr>
+                    <tr><td style="color:#8c8c8c">78</td><td style="font-weight:500;color:#262626">批改时效</td><td><span class="tag tr2">红线违规</span></td><td style="color:#8c8c8c">作业批改须在24小时内完成，不得拖延…</td><td><button class="bl">编辑</button></td></tr>
+                    <tr><td style="color:#8c8c8c">79</td><td style="font-weight:500;color:#262626">批注规范</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c">批注内容不得出现与作业无关的内容…</td><td><button class="bl">编辑</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pg"><span class="pginfo">共 4 条</span><div class="pgb"><i class="ti ti-chevron-left" style="font-size:12px"></i></div><div class="pgb on">1</div><div class="pgb"><i class="ti ti-chevron-right" style="font-size:12px"></i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="pane" id="pane-s" style="flex-direction:column">
+          <div class="spec-col">
+            <div class="sst-bar">
+              <button class="sst" id="sst-ai" onclick="swSpec('ai')">AI 质检</button>
+              <button class="sst on" id="sst-kw" onclick="swSpec('kw')">关键词类型</button>
+            </div>
+            <div class="spane" id="sp-ai">
+              <!-- 路由说明区 独立 -->
+              <div style="padding:12px 20px 14px;background:#f8faff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0">
+                <div style="font-size:12.5px;font-weight:500;color:#595959;display:flex;align-items:center;gap:5px;margin-bottom:12px"><i class="ti ti-route" style="color:#1677ff;font-size:14px"></i>规则路由：数据如何被 AI 质检命中</div>
+                <div style="display:flex;align-items:center;gap:0;overflow-x:auto">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0">
+                    <div style="padding:6px 14px;background:#fff;border-radius:6px;font-size:12px;color:#595959;border:1px solid #d9d9d9;white-space:nowrap">抽检数据</div>
+                    <div style="font-size:11px;color:#bfbfbf">① 数据来源</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-bottom:16px">→</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0">
+                    <div style="padding:6px 14px;background:#e6f4ff;border-radius:6px;font-size:12px;color:#0958d9;border:1px solid #91caff;white-space:nowrap">AI 模型扫描</div>
+                    <div style="font-size:11px;color:#bfbfbf">② 机器质检</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-bottom:16px">→</div>
+                  <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="padding:3px 8px;background:#fffbe6;border-radius:4px;font-size:11.5px;color:#d48806;border:1px solid #ffe58f;white-space:nowrap;font-weight:500">情感识别</span>
+                      <span style="font-size:11.5px;color:#8c8c8c">命中</span>
+                      <span style="padding:2px 7px;background:#fffbe6;border-radius:3px;font-size:11px;color:#d48806;border:1px solid #ffe58f">黄线违规</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="padding:3px 8px;background:#fff2f0;border-radius:4px;font-size:11.5px;color:#cf1322;border:1px solid #ffa39e;white-space:nowrap;font-weight:500">语义理解</span>
+                      <span style="font-size:11.5px;color:#8c8c8c">命中</span>
+                      <span style="padding:2px 7px;background:#fff2f0;border-radius:3px;font-size:11px;color:#cf1322;border:1px solid #ffa39e">红线违规</span>
+                    </div>
+                    <div style="font-size:11px;color:#bfbfbf">③ 路由结果</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-bottom:16px">→</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0">
+                    <div style="padding:6px 14px;background:#f6ffed;border-radius:6px;font-size:12px;color:#389e0d;border:1px solid #b7eb8f;white-space:nowrap">人工质检处理</div>
+                    <div style="font-size:11px;color:#bfbfbf">④ 人工审核</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 新增按钮在路由区下方 -->
+              <div style="display:flex;justify-content:flex-end;padding:10px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06);flex-shrink:0">
+                <button class="btn bp" style="height:28px"><i class="ti ti-plus"></i>新增 AI 质检类型</button>
+              </div>
+              <div class="tblw">
+                <table>
+                  <thead><tr><th>专项质检类型</th><th style="width:110px">问题类型</th><th style="width:110px">最近更新</th><th style="width:60px">操作</th></tr></thead>
+                  <tbody>
+                    <tr><td style="font-weight:500;color:#262626">情感识别</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c">2024-05-01</td><td><button class="bl">编辑</button></td></tr>
+                    <tr><td style="font-weight:500;color:#262626">语义理解</td><td><span class="tag tr2">红线违规</span></td><td style="color:#8c8c8c">2024-04-20</td><td><button class="bl">编辑</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="spane show" id="sp-kw">
+              <!-- 路由说明区 独立 -->
+              <div style="padding:12px 20px 14px;background:#f8faff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0">
+                <div style="font-size:12.5px;font-weight:500;color:#595959;display:flex;align-items:center;gap:5px;margin-bottom:12px"><i class="ti ti-route" style="color:#1677ff;font-size:14px"></i>规则路由：关键词如何触发质检流程</div>
+                <div style="display:flex;align-items:flex-start;gap:0;overflow-x:auto">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;margin-top:2px">
+                    <div style="padding:6px 14px;background:#fff;border-radius:6px;font-size:12px;color:#595959;border:1px solid #d9d9d9;white-space:nowrap">抽检数据</div>
+                    <div style="font-size:11px;color:#bfbfbf">① 数据来源</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-top:8px">→</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;margin-top:2px">
+                    <div style="padding:6px 14px;background:#e6f4ff;border-radius:6px;font-size:12px;color:#0958d9;border:1px solid #91caff;white-space:nowrap">关键词策略</div>
+                    <div style="font-size:11px;color:#8c8c8c;text-align:center;line-height:1.5">短语匹配<br>上下文抑制 · 白名单</div>
+                    <div style="font-size:11px;color:#bfbfbf">② 机器质检</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-top:8px">→</div>
+                  <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+                    <div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:#f6ffed;border-radius:4px;border:1px solid #b7eb8f">
+                      <i class="ti ti-shield-check" style="font-size:13px;color:#389e0d;flex-shrink:0"></i>
+                      <span style="font-size:11.5px;color:#389e0d;white-space:nowrap">白名单命中</span>
+                      <span style="font-size:11px;color:#8c8c8c">→ 直接放行，不进入质检</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <div style="width:7px;height:7px;border-radius:50%;background:#cf1322;flex-shrink:0"></div>
+                      <span style="font-size:11.5px;color:#262626;white-space:nowrap;font-weight:500">涉政敏感 / 辱骂用户</span>
+                      <span style="padding:2px 7px;background:#fff2f0;border-radius:3px;font-size:11px;color:#cf1322;border:1px solid #ffa39e">红线违规</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <div style="width:7px;height:7px;border-radius:50%;background:#d48806;flex-shrink:0"></div>
+                      <span style="font-size:11.5px;color:#262626;white-space:nowrap;font-weight:500">品牌损害 / 隐私泄露</span>
+                      <span style="padding:2px 7px;background:#fffbe6;border-radius:3px;font-size:11px;color:#d48806;border:1px solid #ffe58f">黄线违规</span>
+                    </div>
+                    <div style="font-size:11px;color:#bfbfbf">③ 路由结果</div>
+                  </div>
+                  <div style="color:#d9d9d9;padding:0 8px;font-size:18px;flex-shrink:0;margin-top:8px">→</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;margin-top:2px">
+                    <div style="padding:6px 14px;background:#f6ffed;border-radius:6px;font-size:12px;color:#389e0d;border:1px solid #b7eb8f;white-space:nowrap">人工质检处理</div>
+                    <div style="font-size:11px;color:#bfbfbf">④ 人工审核</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 新增按钮在路由区下方 -->
+              <div style="display:flex;justify-content:flex-end;padding:10px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.06);flex-shrink:0">
+                <button class="btn bp" style="height:28px" onclick="openKwDrawer('涉政敏感')"><i class="ti ti-plus"></i>新增关键词类型</button>
+              </div>
+              <div class="tblw">
+                <table>
+                  <thead><tr><th>关键词类型</th><th style="width:110px">违规等级</th><th style="width:110px">最近更新</th><th style="width:70px">更新人</th><th style="width:60px">操作</th></tr></thead>
+                  <tbody>
+                    <tr><td style="font-weight:500;color:#262626">涉政敏感</td><td><span class="tag tr2">红线违规</span></td><td style="color:#8c8c8c;font-size:12px">2024-05-18</td><td style="color:#8c8c8c">李运营</td><td><button class="bl" onclick="openKwDrawer('涉政敏感')">编辑</button></td></tr>
+                    <tr><td style="font-weight:500;color:#262626">辱骂用户</td><td><span class="tag tr2">红线违规</span></td><td style="color:#8c8c8c;font-size:12px">2024-05-15</td><td style="color:#8c8c8c">王质检</td><td><button class="bl" onclick="openKwDrawer('辱骂用户')">编辑</button></td></tr>
+                    <tr><td style="font-weight:500;color:#262626">品牌损害</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c;font-size:12px">2024-04-30</td><td style="color:#8c8c8c">李运营</td><td><button class="bl" onclick="openKwDrawer('品牌损害')">编辑</button></td></tr>
+                    <tr><td style="font-weight:500;color:#262626">隐私泄露</td><td><span class="tag ty">黄线违规</span></td><td style="color:#8c8c8c;font-size:12px">2024-05-10</td><td style="color:#8c8c8c">张策略</td><td><button class="bl" onclick="openKwDrawer('隐私泄露')">编辑</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pg"><span class="pginfo">共 4 条</span><div class="pgb"><i class="ti ti-chevron-left" style="font-size:12px"></i></div><div class="pgb on">1</div><div class="pgb"><i class="ti ti-chevron-right" style="font-size:12px"></i></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: 质检规则 ══════════════ -->
+      <div class="page" id="p-qcrule">
+        <div style="display:flex;align-items:center;gap:6px;padding:12px 20px;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0;background:#fff">
+          <button class="rbtn on">课导</button>
+          <button class="rbtn">班主任</button>
+        </div>
+        <div style="display:flex;gap:0;padding:0 20px;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0;background:#fff">
+          <div class="stab">日常质检</div>
+          <div class="stab on">专项质检</div>
+        </div>
+        <div class="cards-area">
+          <div class="rule-card">
+            <div class="rc-head"><span class="rc-title">专项质检（id: 32）</span><span class="rc-status st-on">生效</span></div>
+            <div class="rc-meta">2026-04-27 15:31:20 &nbsp;代康成</div>
+            <div class="rc-stats">
+              <div class="rc-stat">待质检问题数 <span>2</span></div>
+              <div class="rc-stat">待处理申诉单 <span>25</span></div>
+              <div class="rc-stat" style="grid-column:1/-1">待处理二次申诉单 <span>11</span></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn bp" style="height:26px" onclick="openRuleModal()">编辑</button>
+              <button class="btn bd2" style="height:26px">停用</button>
+            </div>
+          </div>
+          <div class="rule-card">
+            <div class="rc-head"><span class="rc-title">专项质检（id: 28）</span><span class="rc-status st-off">停用</span></div>
+            <div class="rc-meta">2026-03-10 09:10:00 &nbsp;李运营</div>
+            <div class="rc-stats">
+              <div class="rc-stat">待质检问题数 <span>0</span></div>
+              <div class="rc-stat">待处理申诉单 <span>0</span></div>
+              <div class="rc-stat" style="grid-column:1/-1">待处理二次申诉单 <span>0</span></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn bp" style="height:26px" onclick="openRuleModal()">编辑</button>
+              <button class="btn bd2" style="height:26px">启用</button>
+            </div>
+          </div>
+        </div>
+        <div class="pg" style="background:#f5f7fa">
+          <span class="pginfo">共 2 条</span>
+          <div class="pgb"><i class="ti ti-chevron-left" style="font-size:12px"></i></div>
+          <div class="pgb on">1</div>
+          <div class="pgb"><i class="ti ti-chevron-right" style="font-size:12px"></i></div>
+          <select class="per-page" style="margin-left:8px"><option>20 条/页</option><option>50 条/页</option></select>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: 会话关键词 ══════════════ -->
+      <div class="page" id="p-kw">
+        <div class="role-bar-kw">
+          <button class="rbtn">课导</button>
+          <button class="rbtn on">班主任</button>
+        </div>
+        <div class="kw-page-title">班主任质检</div>
+        <div style="padding:10px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0;display:flex;justify-content:flex-end;gap:8px">
+          <i class="ti ti-refresh" style="font-size:18px;color:#8c8c8c;cursor:pointer"></i>
+          <i class="ti ti-text-size" style="font-size:18px;color:#8c8c8c;cursor:pointer"></i>
+          <i class="ti ti-settings" style="font-size:18px;color:#8c8c8c;cursor:pointer"></i>
+          <i class="ti ti-arrows-maximize" style="font-size:18px;color:#8c8c8c;cursor:pointer"></i>
+        </div>
+        <div class="tblw" style="border-bottom:none">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:80px">ID</th>
+                <th>关键词</th>
+                <th style="width:110px">质检类型</th>
+                <th style="width:90px">添加人</th>
+                <th style="width:90px">敏感程度</th>
+                <th style="width:110px">添加时间</th>
+                <th style="width:110px">更新时间</th>
+                <th style="width:80px">备注 <i class="ti ti-info-circle" style="font-size:12px;vertical-align:middle"></i></th>
+                <th style="width:60px">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="9" style="padding:0">
+                  <div class="add-inline-row" style="margin:8px 12px;border-radius:6px" onclick="showToast('新增关键词','ok')">
+                    <i class="ti ti-plus" style="font-size:14px"></i> 新增班主任关键词
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="empty-state"><i class="ti ti-inbox"></i><p>暂无数据</p></div>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: 任务明细 ══════════════ -->
+      <div class="page" id="p-task">
+        <!-- 筛选表单 -->
+        <div class="filter-grid">
+          <div class="fg-item"><span class="fg-label">工单ID：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">问题类型：</span><select class="fg-sel"><option>请选择问题类型</option></select></div>
+          <div class="fg-item"><span class="fg-label">任务ID：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">期次：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">组别：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">组长（申诉人）：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">学期ID：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">班级ID：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item"><span class="fg-label">审核人：</span><select class="fg-sel"><option>请选择审核人</option></select></div>
+          <div class="fg-item"><span class="fg-label">被审核人：</span><select class="fg-sel"><option>请选择被审核人</option></select></div>
+          <div class="fg-item"><span class="fg-label">违规等级：</span><select class="fg-sel"><option>请选择违规等级</option><option>黄线违规</option><option>红线违规</option></select></div>
+          <div class="fg-item"><span class="fg-label">用户userID <i class="ti ti-help-circle" style="font-size:12px"></i>：</span><input class="fg-input" placeholder="请输入"></div>
+          <div class="fg-item" style="grid-column:1/3">
+            <span class="fg-label">分配时间：</span>
+            <input class="fg-input" type="date" style="width:140px">
+            <span style="color:#8c8c8c;padding:0 4px">→</span>
+            <input class="fg-input" type="date" style="width:140px">
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn bd2">重置</button>
+          <button class="btn bp">查询</button>
+          <button class="collapse-link"><i class="ti ti-chevron-up"></i>收起</button>
+        </div>
+        <!-- 子tab + 导出 -->
+        <div class="sub-tabs-bar">
+          <div class="stab">日常质检</div>
+          <div class="stab on">专项质检</div>
+          <div class="tbl-actions-right">
+            <button class="btn bp" style="height:28px"><i class="ti ti-upload"></i>导出</button>
+            <i class="ti ti-refresh" style="font-size:17px;color:#8c8c8c;cursor:pointer;padding:0 4px"></i>
+            <i class="ti ti-text-size" style="font-size:17px;color:#8c8c8c;cursor:pointer;padding:0 4px"></i>
+            <i class="ti ti-settings" style="font-size:17px;color:#8c8c8c;cursor:pointer;padding:0 4px"></i>
+            <i class="ti ti-arrows-maximize" style="font-size:17px;color:#8c8c8c;cursor:pointer;padding:0 4px"></i>
+          </div>
+        </div>
+        <!-- 表格 -->
+        <div class="tblw">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:100px">工单ID <i class="ti ti-arrows-sort sort-icon"></i></th>
+                <th style="width:60px">职务 <i class="ti ti-arrows-sort sort-icon"></i></th>
+                <th style="width:80px">课程类型 <i class="ti ti-arrows-sort sort-icon"></i></th>
+                <th style="width:60px">城市</th>
+                <th style="width:60px">学科</th>
+                <th>问题类型 &amp; 扣款人</th>
+                <th style="width:80px">质检结果 <i class="ti ti-arrows-sort sort-icon"></i></th>
+                <th style="width:60px">大区</th>
+                <th style="width:60px">业务线</th>
+                <th style="width:100px">质检规则</th>
+                <th style="width:60px">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:#1677ff;cursor:pointer;font-weight:500;vertical-align:top;padding-top:12px">TK-20240518-001</td>
+                <td style="vertical-align:top;padding-top:12px">课导</td>
+                <td style="vertical-align:top;padding-top:12px">一对一</td>
+                <td style="vertical-align:top;padding-top:12px">北京</td>
+                <td style="vertical-align:top;padding-top:12px">数学</td>
+                <td style="vertical-align:top;padding-top:10px;padding-bottom:10px">
+                  <div style="display:flex;flex-direction:column;gap:7px">
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                      <div style="display:flex;align-items:center;gap:6px">
+                        <span class="tag to" style="flex-shrink:0;font-size:11.5px">致命项</span>
+                        <span style="font-size:12.5px;color:#262626">课程规划</span>
+                        <span style="color:#bfbfbf;font-size:12px">→</span>
+                        <span style="font-size:12.5px;font-weight:500;color:#262626">王磊</span>
+                        <span style="font-size:12px;color:#8c8c8c">ht10011</span>
+                      </div>
+                      <div><span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11.5px;color:#8c8c8c;background:#f5f5f5;border:0.5px solid #e0e0e0">组长担责</span></div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                      <div style="display:flex;align-items:center;gap:6px">
+                        <span class="tag to" style="flex-shrink:0;font-size:11.5px">致命项</span>
+                        <span style="font-size:12.5px;color:#262626">情绪安抚</span>
+                        <span style="color:#bfbfbf;font-size:12px">→</span>
+                        <span style="font-size:12.5px;font-weight:500;color:#262626">张三</span>
+                        <span style="font-size:12px;color:#8c8c8c">ht33672</span>
+                      </div>
+                      <div><span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11.5px;color:#8c8c8c;background:#f5f5f5;border:0.5px solid #e0e0e0">本人担责</span></div>
+                    </div>
+                  </div>
+                </td>
+                <td style="vertical-align:top;padding-top:12px"><span class="tag ty">待处理</span></td>
+                <td style="vertical-align:top;padding-top:12px">华北区</td>
+                <td style="vertical-align:top;padding-top:12px">K12</td>
+                <td style="color:#8c8c8c;font-size:12px;vertical-align:top;padding-top:12px">专项质检-编程课导</td>
+                <td style="vertical-align:top;padding-top:9px"><button class="btn bp" style="height:24px;font-size:11.5px" onclick="openProcessPage()">处理</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="empty-state" style="flex:none;padding:60px 0"><i class="ti ti-inbox"></i><p>仅展示示例数据，实际数据需查询</p></div>
+        </div>
+        <div class="pg"><span class="pginfo">共 1 条</span><div class="pgb"><i class="ti ti-chevron-left" style="font-size:12px"></i></div><div class="pgb on">1</div><div class="pgb"><i class="ti ti-chevron-right" style="font-size:12px"></i></div></div>
+      </div>
+
+      <!-- ══════════════ 质检处理全屏页 ══════════════ -->
+      <div id="process-page" style="display:none;position:absolute;inset:0;background:#fff;z-index:80;flex-direction:column;overflow:hidden">
+        <!-- 顶栏 -->
+        <div style="height:40px;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0">
+          <button onclick="closeProcessPage()" style="display:flex;align-items:center;gap:3px;height:26px;padding:0 10px;background:#1677ff;border:none;border-radius:5px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit"><i class="ti ti-arrow-left" style="font-size:12px"></i>返回</button>
+          <span style="font-size:13px;font-weight:500;color:#262626">编程指导师青棠</span>
+          <span style="padding:1px 7px;background:#f6ffed;border:1px solid #b7eb8f;border-radius:100px;font-size:11.5px;color:#389e0d;font-weight:500">1/1</span>
+          <span style="font-size:12px;color:#595959;cursor:pointer">切换老师</span>
+          <span style="margin-left:8px;font-size:13px;font-weight:500;color:#262626">64225177</span>
+          <span style="padding:1px 9px;background:#1677ff;border-radius:4px;font-size:12px;color:#fff;font-weight:500">通过</span>
+          <span style="font-size:12px;color:#595959;cursor:pointer">切换会话</span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button style="padding:3px 10px;background:#f0f0f0;border:1px solid #d9d9d9;border-radius:5px;font-size:12px;color:#595959;cursor:pointer;font-family:inherit">灰色护眼</button>
+            <button style="padding:3px 10px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:5px;font-size:12px;color:#2e7d32;cursor:pointer;font-family:inherit">绿色护眼</button>
+          </div>
+        </div>
+        <!-- 工单信息条 -->
+        <div style="background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:6px 14px;flex-shrink:0;font-size:12px;line-height:1.9;color:#595959">
+          <div>
+            <span style="color:#8c8c8c">质检工单状态：</span><span style="color:#1677ff;font-weight:500;margin-right:12px">通过</span>
+            <span style="color:#8c8c8c">申诉状态：</span><span style="padding:1px 6px;background:#fff2f0;border:1px solid #ffa39e;border-radius:3px;font-size:11.5px;color:#cf1322;font-weight:500;margin-right:12px">二次申诉通过</span>
+            <span style="color:#8c8c8c">学生：</span><span style="color:#1677ff;margin-right:12px">64225177(64225177)</span>
+            <span style="color:#8c8c8c">年龄：</span><span style="margin-right:12px">10</span>
+            <span style="color:#8c8c8c">年级：</span><span style="margin-right:12px">五年级</span>
+            <span style="color:#8c8c8c">性别：</span><span style="margin-right:12px">女</span>
+            <span style="color:#8c8c8c">设备：</span><span style="margin-right:12px">核桃软硬件</span>
+            <span style="color:#8c8c8c">地区：</span><span>上海市 上海市</span>
+          </div>
+          <div>
+            <span style="color:#8c8c8c">老师花名：</span><span style="color:#1677ff;margin-right:12px">编程指导师青棠(30002878)</span>
+            <span style="color:#8c8c8c">班主任：</span><span style="color:#1677ff;margin-right:12px">刘婉婷(HT29748)</span>
+            <span style="color:#8c8c8c">申诉组长：</span><span style="color:#1677ff;margin-right:12px">王磊</span>
+            <span style="color:#8c8c8c">班型：</span><span style="margin-right:12px">科特用户｜PythonMorton</span>
+            <span style="color:#8c8c8c">智配/智配中人效：</span><span style="margin-right:12px">单独运营</span>
+            <span style="color:#8c8c8c">课包价格：</span><span style="margin-right:12px">4199.00元</span>
+            <span style="color:#8c8c8c">课次信息：</span><span>1-2</span>
+          </div>
+        </div>
+        <!-- 主体 -->
+        <div style="flex:1;display:flex;overflow:hidden">
+          <!-- 最左：竖排快捷导航 -->
+          <div style="width:28px;background:#fff;border-right:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:10px;flex-shrink:0;overflow-y:auto">
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">质</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">质</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">会</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">任</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">交</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">质</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">质</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">申</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">复</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">复</div>
+            <div style="writing-mode:vertical-rl;font-size:12px;color:#8c8c8c;cursor:pointer;padding:4px 0;letter-spacing:2px">质</div>
+          </div>
+          <!-- 会话记录 -->
+          <div style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px;background:#fff">
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 08:02:43</div>
+              <div style="max-width:68%;background:#1677ff;color:#fff;border-radius:10px 2px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6">昨晚太晚了，老师做了一份手写笔记留给您。除了教孩子编程，老师更希望通过言传身教的方式让阳阳有一个良好的学习习惯</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 08:02:45</div>
+              <div style="display:flex;justify-content:flex-end"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='100' viewBox='0 0 80 100'%3E%3Crect width='80' height='100' fill='%23e8e8e8' rx='4'/%3E%3Ctext x='40' y='55' text-anchor='middle' font-size='10' fill='%23999'%3E笔记图片%3C/text%3E%3C/svg%3E" style="border-radius:6px;max-width:120px"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 08:02:46</div>
+              <div style="max-width:68%;background:#1677ff;color:#fff;border-radius:10px 2px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6">咱们按照约定好的时间让阳阳准备复习课到时候单独拉他上台表现，咱们多鼓励他，千万不要怯场哦</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:7px">
+              <div style="width:28px;height:28px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-user" style="font-size:14px;color:#8c8c8c"></i></div>
+              <div>
+                <div style="font-size:11px;color:#8c8c8c;margin-bottom:3px">家长(来源：企微) 2026-04-25 08:12:33</div>
+                <div style="background:#f5f5f5;border-radius:2px 10px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6;display:inline-block">复习课是几点？</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 08:57:29</div>
+              <div style="max-width:68%;background:#1677ff;color:#fff;border-radius:10px 2px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6">10点半，11点半，1点，三场都可以，看阳阳哪个时间段方便</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 09:24:23</div>
+              <div style="max-width:68%;background:#1677ff;color:#fff;border-radius:10px 2px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6">我看之前约的10点半，阳阳能来不~</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:7px">
+              <div style="width:28px;height:28px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-user" style="font-size:14px;color:#8c8c8c"></i></div>
+              <div>
+                <div style="font-size:11px;color:#8c8c8c;margin-bottom:3px">家长(来源：企微) 2026-04-25 09:33:45</div>
+                <div style="background:#f5f5f5;border-radius:2px 10px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6;display:inline-block">可以。但是在哪里约的呀？</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div style="font-size:11px;color:#8c8c8c">老师(来源：企微) 2026-04-25 09:34:20</div>
+              <div style="max-width:68%;background:#f0f0f0;border-radius:10px 2px 10px 10px;padding:9px 13px;font-size:13px;line-height:1.6;color:#262626;display:flex;align-items:center;gap:8px">
+                <i class="ti ti-microphone" style="font-size:14px;color:#8c8c8c"></i>
+                <div style="flex:1;height:3px;background:#d9d9d9;border-radius:2px"></div>
+                <span style="font-size:11.5px;color:#8c8c8c">0:15</span>
+                <span style="font-size:11.5px;color:#1677ff;cursor:pointer">收起字幕</span>
+              </div>
+              <div style="max-width:68%;font-size:12.5px;color:#595959;line-height:1.6;text-align:right">之前咱们两个在直播预习课里的时候，约的时间晾了没事，咱们也要今天10点半开始进那个软件，进来上预习课。哦，复习课。</div>
+            </div>
+          </div>
+          <!-- 右：关键词命中面板 -->
+          <div style="width:320px;border-left:1px solid rgba(0,0,0,.08);background:#fff;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden">
+            <div style="padding:10px 14px 8px;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0;display:flex;align-items:center;gap:8px">
+              <span style="font-size:13.5px;font-weight:500;color:#262626">涉政言论</span>
+              <span style="padding:2px 8px;background:#fff2f0;border:1px solid #ffa39e;border-radius:4px;font-size:12px;color:#cf1322;font-weight:500">高压线违规</span>
+            </div>
+            <!-- 列头：删掉类别 -->
+            <div style="display:grid;grid-template-columns:90px 1fr;padding:6px 14px;background:#fafafa;border-bottom:1px solid rgba(0,0,0,.06);flex-shrink:0">
+              <span style="font-size:12px;color:#8c8c8c;font-weight:500">命中词</span>
+              <span style="font-size:12px;color:#8c8c8c;font-weight:500">命中上下文</span>
+            </div>
+            <div style="flex:1;overflow-y:auto">
+              <div style="display:grid;grid-template-columns:90px 1fr;padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.06);align-items:start;gap:6px">
+                <div style="font-size:13px;color:#cf1322;font-weight:500">独立</div>
+                <div style="font-size:12.5px;color:#595959;line-height:1.7">培养孩子<mark style="background:#ffe58f;color:#262626;padding:0 2px;border-radius:2px">独立</mark>思考的能力是非常重要的</div>
+              </div>
+            </div>
+            <div style="padding:8px 14px;border-top:1px solid rgba(0,0,0,.06);flex-shrink:0;background:#fafafa">
+              <div style="font-size:11.5px;color:#8c8c8c;display:flex;align-items:flex-start;gap:4px"><i class="ti ti-info-circle" style="font-size:13px;margin-top:1px;flex-shrink:0;color:#bfbfbf"></i>如认为属误判，请在质检结论中说明原因</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 关键词抽屉 ══════════════ -->
+      <div class="ov" id="kw-ov" onclick="closeKwDrawer()"></div>
+      <div class="drw" id="kw-drw">
+        <div class="dh">
+          <i class="ti ti-settings" style="font-size:18px;color:#1677ff"></i>
+          <div>
+            <div style="font-size:14px;font-weight:500;color:#262626" id="kw-ttl">编辑关键词策略</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+            <span class="tag" id="kw-ltag">红线违规</span>
+            <button style="background:none;border:none;cursor:pointer;color:#8c8c8c;font-size:18px;padding:2px" onclick="closeKwDrawer()"><i class="ti ti-x"></i></button>
+          </div>
+        </div>
+        <div class="dtabs">
+          <div class="dtab on" id="dt-0" onclick="switchDTab(0)">短语词库</div>
+          <div class="dtab" id="dt-1" onclick="switchDTab(1)">上下文抑制</div>
+          <div class="dtab" id="dt-2" onclick="switchDTab(2)">白名单</div>
+        </div>
+        <div class="dpanel show" id="dp-0">
+          <div class="tip2"><i class="ti ti-info-circle"></i><span><strong style="font-weight:500">短语规则：</strong>支持批量导入 Excel/CSV 格式，每行包含：短语内容、生效范围、备注说明。建议定期维护，删除过时规则。</span></div>
+          <div class="dim-block">
+            <div class="dim-head">
+              <span class="dim-label">词汇</span><span class="dim-count" id="word-count">共 2 条</span>
+              <button class="btn bd2" style="height:26px;font-size:12px;margin-left:auto" onclick="showToast('批量导入词汇','ok')"><i class="ti ti-upload"></i>批量导入</button>
+            </div>
+            <table class="it2"><thead><tr><th>短语内容</th><th>备注</th><th style="width:46px">操作</th></tr></thead>
+              <tbody id="word-tbody">
+                <tr><td><input type="text" value="XX独立"></td><td><input type="text" value="含分裂语义"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+                <tr><td><input type="text" value="颠覆政权"></td><td><input type="text" placeholder="备注（可选）"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+              </tbody>
+            </table>
+            <button class="add-row-btn" onclick="addRow('word-tbody','word-count')"><i class="ti ti-plus" style="font-size:14px"></i>添加词汇</button>
+          </div>
+          <div style="border-top:1px solid rgba(0,0,0,.06);margin:4px 0 16px"></div>
+          <div class="dim-block">
+            <div class="dim-head">
+              <span class="dim-label">短语</span><span class="dim-count" id="phrase-count">共 2 条</span>
+              <button class="btn bd2" style="height:26px;font-size:12px;margin-left:auto" onclick="showToast('批量导入短语','ok')"><i class="ti ti-upload"></i>批量导入</button>
+            </div>
+            <table class="it2"><thead><tr><th>短语内容</th><th>备注</th><th style="width:46px">操作</th></tr></thead>
+              <tbody id="phrase-tbody">
+                <tr><td><input type="text" value="独立操作系统"></td><td><input type="text" value="完整短语匹配，避免误判"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+                <tr><td><input type="text" value="独立思考能力"></td><td><input type="text" value="教学常用短语"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+              </tbody>
+            </table>
+            <button class="add-row-btn" onclick="addRow('phrase-tbody','phrase-count')"><i class="ti ti-plus" style="font-size:14px"></i>添加短语</button>
+          </div>
+        </div>
+        <div class="dpanel" id="dp-1">
+          <div class="tip2"><i class="ti ti-info-circle"></i><span><strong style="font-weight:500">上下文抑制规则：</strong>配置前后文关键词条件，当满足条件时抑制告警。例如：「独立」出现时，若前文有「思考」「能力」则不告警，可有效降低教学场景误判率。</span></div>
+          <button class="add-row-btn" style="margin-bottom:10px" onclick="addCtxRow()"><i class="ti ti-plus" style="font-size:14px"></i>添加规则</button>
+          <table class="it2"><thead><tr><th style="width:90px">触发关键词</th><th>上下文条件</th><th style="width:46px">操作</th></tr></thead>
+            <tbody id="ctx-tbody">
+              <tr><td><input type="text" value="独立"></td><td><div class="ctx-cond"><div class="ctx-cond-item"><span class="ctx-cond-label">前文包含</span><input class="ctx-cond-input" type="text" value="思考、能力、完成"></div><div class="ctx-cond-item"><span class="ctx-cond-label">后文包含</span><input class="ctx-cond-input" type="text" placeholder="（可选）"></div></div></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+              <tr><td><input type="text" value="操作"></td><td><div class="ctx-cond"><div class="ctx-cond-item"><span class="ctx-cond-label">前文包含</span><input class="ctx-cond-input" type="text" placeholder="（可选）"></div><div class="ctx-cond-item"><span class="ctx-cond-label">后文包含</span><input class="ctx-cond-input" type="text" value="系统、软件、练习"></div></div></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="dpanel" id="dp-2">
+          <div class="tip2"><i class="ti ti-info-circle"></i><span><strong style="font-weight:500">白名单规则：</strong>整句或短语级放行列表。建议标注来源场景，便于后续维护。</span></div>
+          <button class="add-row-btn" style="margin-bottom:10px" onclick="addWlRow()"><i class="ti ti-plus" style="font-size:14px"></i>添加白名单</button>
+          <table class="it2"><thead><tr><th>内容</th><th>备注</th><th style="width:46px">操作</th></tr></thead>
+            <tbody id="wl-tbody">
+              <tr><td><input class="wl-content-input" type="text" value="培养独立思考的能力"></td><td><input type="text" value="标准教学用语" style="border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;outline:none;width:100%"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+              <tr><td><input class="wl-content-input" type="text" value="独立完成作业"></td><td><input type="text" placeholder="备注（可选）" style="border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;outline:none;width:100%"></td><td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="df">
+          <div style="display:flex;gap:6px;margin-left:auto">
+            <button class="btn bd2" style="height:30px" onclick="closeKwDrawer()">× 取消</button>
+            <button class="btn" style="height:30px;background:#262626;color:#fff" onclick="closeKwDrawer();showToast('保存成功，配置5分钟内生效','ok')"><i class="ti ti-device-floppy"></i>保存配置</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ 质检规则编辑弹窗 ══════════════ -->
+      <div class="modal-bg" id="rule-modal" onclick="bgClose(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+          <div class="mh">
+            <div class="mh-title">编辑质检规则「专项质检」</div>
+            <span class="mh-badge">启用</span>
+            <span class="mh-hint">质检规则修改后，仅会在下次执行时间生效</span>
+            <button class="mh-close" onclick="closeRuleModal()"><i class="ti ti-x"></i></button>
+          </div>
+          <div class="mb">
+            <div class="sec-title">基础信息</div>
+            <div class="form-grid g3">
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 角色</div>
+                <div style="display:flex;gap:6px"><button class="role-btn-dis on">课导</button><button class="role-btn-dis">班主任</button></div>
+              </div>
+              <div class="form-item form-dis">
+                <div class="form-label"><span class="req">*</span> 数据来源</div>
+                <select class="form-sel" disabled><option>专项质检</option></select>
+              </div>
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 规则名称</div>
+                <input class="form-inp" type="text" value="编程课导">
+              </div>
+            </div>
+            <div class="form-grid g2">
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 关联质检标准</div>
+                <select class="form-sel"><option>虚假承诺</option></select>
+              </div>
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 关联日常质检规则</div>
+                <div class="tag-input"><span class="tag-chip">编程课导 <i class="ti ti-x"></i></span><span class="tag-chip">围棋-2.28 <i class="ti ti-x"></i></span></div>
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="sec-title">抽检规则</div>
+            <div class="form-grid g2">
+              <div class="form-item form-dis">
+                <div class="form-label"><span class="req">*</span> 执行时间</div>
+                <select class="form-sel" disabled><option>每周 二 上午 2:00:00 执行</option></select>
+                <div class="dis-tip"><i class="ti ti-lock"></i>专项质检执行时间固定，不可修改</div>
+              </div>
+              <div class="form-item form-dis">
+                <div class="form-label"><span class="req">*</span> 执行轮次</div>
+                <select class="form-sel" disabled><option>每 1 自然月为一轮次</option></select>
+                <div class="dis-tip"><i class="ti ti-lock"></i>专项质检轮次固定，不可修改</div>
+              </div>
+            </div>
+            <div class="form-item">
+              <div class="form-label" style="margin-bottom:8px"><i class="ti ti-filter" style="color:#1677ff;font-size:14px"></i> 抽检过滤逻辑 <span style="font-size:11.5px;color:#8c8c8c;margin-left:4px;font-weight:400">以下条件命中时，数据不进入本轮抽检</span></div>
+              <div class="filter-block">
+                <div class="filter-rule"><div class="filter-idx">1</div><div class="filter-rule-text">同一自然月内，已出现在任意专项质检抽样结果中的用户，本轮跳过</div></div>
+                <div class="filter-rule"><div class="filter-idx">2</div><div class="filter-rule-text">已被日常质检规则命中并分配的数据，不重复进入专项队列</div></div>
+                <div class="filter-rule"><div class="filter-idx">3</div><div class="filter-rule-text">已分配至专项质检的数据，仍需通过关联日常质检规则的抽检阈值（抽检比例、时段等）</div></div>
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="form-grid g2">
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 申诉人</div>
+                <select class="form-sel"><option>为被抽检老师所归属组织架构的 +1</option></select>
+              </div>
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 双审触发概率（0-100）</div>
+                <input class="form-inp" type="number" value="20">
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="sec-title">质检分工</div>
+            <div class="form-grid g2">
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 首次+一次申诉判定</div>
+                <div class="tag-input"><span class="tag-chip">高腾龙 <i class="ti ti-x"></i></span><span class="tag-chip">樊琴 <i class="ti ti-x"></i></span></div>
+              </div>
+              <div class="form-item">
+                <div class="form-label"><span class="req">*</span> 二次申诉判定</div>
+                <div class="tag-input"><span class="tag-chip">王锐 <i class="ti ti-x"></i></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="mf">
+            <button class="btn bd2" onclick="closeRuleModal()">取 消</button>
+            <button class="btn bp" onclick="closeRuleModal();showToast('规则已保存','ok')">保 存</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /body-wrap -->
+</div><!-- /app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// 导航切换
+document.querySelectorAll('#sidenav .ni[data-page]').forEach(function(el){
+  el.addEventListener('click',function(){
+    var pid=this.dataset.page;
+    document.querySelectorAll('#sidenav .ni').forEach(function(n){n.classList.remove('on')});
+    this.classList.add('on');
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+    var pg=document.getElementById(pid);
+    if(pg) pg.classList.add('on');
+  });
+});
+
+// 质检标准 type tabs
+function switchType(t){
+  ['g','s'].forEach(function(x){
+    document.getElementById('tt-'+x).classList.toggle('on',x===t);
+    document.getElementById('pane-'+x).classList.toggle('show',x===t);
+  });
+}
+function selTn(id,title){
+  document.querySelectorAll('.tn').forEach(function(n){n.classList.remove('on')});
+  var el=document.getElementById('tn-'+id);if(el)el.classList.add('on');
+  document.getElementById('g-title').textContent=title;
+}
+function swSpec(t){
+  ['ai','kw'].forEach(function(x){
+    document.getElementById('sst-'+x).classList.toggle('on',x===t);
+    document.getElementById('sp-'+x).classList.toggle('show',x===t);
+  });
+}
+
+// 关键词抽屉
+function openKwDrawer(type){
+  document.getElementById('kw-ttl').textContent='编辑关键词策略 · '+type;
+  var lt=document.getElementById('kw-ltag');
+  var isRed=['涉政敏感','辱骂用户'].includes(type);
+  lt.className='tag '+(isRed?'tr2':'ty');
+  lt.textContent=isRed?'红线违规':'黄线违规';
+  switchDTab(0);
+  document.getElementById('kw-ov').classList.add('open');
+  document.getElementById('kw-drw').classList.add('open');
+}
+function closeKwDrawer(){
+  document.getElementById('kw-ov').classList.remove('open');
+  document.getElementById('kw-drw').classList.remove('open');
+}
+function switchDTab(i){
+  for(var j=0;j<3;j++){
+    document.getElementById('dt-'+j).classList.toggle('on',j===i);
+    document.getElementById('dp-'+j).classList.toggle('show',j===i);
+  }
+}
+
+// 词库操作
+function delRow(btn){
+  var tr=btn.closest('tr');
+  var tb=tr.parentElement;
+  tr.remove();
+  updateCount(tb);
+}
+function updateCount(tb){
+  var id=tb.id;
+  var cid=id==='word-tbody'?'word-count':id==='phrase-tbody'?'phrase-count':null;
+  if(cid) document.getElementById(cid).textContent='共 '+tb.querySelectorAll('tr').length+' 条';
+}
+function addRow(tbId,cntId){
+  var tb=document.getElementById(tbId);
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="输入内容"></td>'
+    +'<td><input type="text" placeholder="备注（可选）"></td>'
+    +'<td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td>';
+  tb.appendChild(tr);
+  document.getElementById(cntId).textContent='共 '+tb.querySelectorAll('tr').length+' 条';
+  tr.querySelector('input').focus();
+}
+function addCtxRow(){
+  var tb=document.getElementById('ctx-tbody');
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="触发词"></td>'
+    +'<td><div class="ctx-cond"><div class="ctx-cond-item"><span class="ctx-cond-label">前文包含</span><input class="ctx-cond-input" type="text" placeholder="（可选）"></div><div class="ctx-cond-item"><span class="ctx-cond-label">后文包含</span><input class="ctx-cond-input" type="text" placeholder="（可选）"></div></div></td>'
+    +'<td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td>';
+  tb.appendChild(tr);tr.querySelector('input').focus();
+}
+function addWlRow(){
+  var tb=document.getElementById('wl-tbody');
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input class="wl-content-input" type="text" placeholder="输入完整短语或整句"></td>'
+    +'<td><input type="text" placeholder="备注（可选）" style="border:1px solid #d9d9d9;border-radius:4px;padding:3px 7px;font-size:12px;font-family:inherit;outline:none;width:100%"></td>'
+    +'<td><button class="bl dr" onclick="delRow(this)"><i class="ti ti-trash" style="font-size:14px"></i></button></td>';
+  tb.appendChild(tr);tr.querySelector('input').focus();
+}
+
+// 质检规则弹窗
+function openProcessPage(){
+  var p=document.getElementById('process-page');
+  p.style.display='flex';
+}
+function showPop(e,type,person,job,resp){
+  e.stopPropagation();
+  var pop=document.getElementById('resp-pop');
+  document.getElementById('pop-title').textContent=type;
+  document.getElementById('pop-body').innerHTML=
+    '<div style="display:flex;flex-direction:column;gap:6px">'
+    +'<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#8c8c8c">扣款人</span><span style="font-weight:500;color:#262626">'+person+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#8c8c8c">工号</span><span style="color:#595959">'+job+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;gap:16px"><span style="color:#8c8c8c">担责方式</span><span style="color:#595959">'+resp+'</span></div>'
+    +'</div>';
+  var rect=e.target.getBoundingClientRect();
+  pop.style.display='block';
+  pop.style.top=(rect.bottom+6)+'px';
+  pop.style.left=Math.min(rect.left,window.innerWidth-230)+'px';
+}
+function closePop(){document.getElementById('resp-pop').style.display='none';}
+document.addEventListener('click',function(e){
+  var pop=document.getElementById('resp-pop');
+  if(pop&&!pop.contains(e.target))pop.style.display='none';
+});
+function openProcessPage(){
+  document.getElementById('process-page').style.display='flex';
+}
+function closeProcessPage(){
+  document.getElementById('process-page').style.display='none';
+}
+function openRuleModal(){document.getElementById('rule-modal').classList.add('open')}
+function closeRuleModal(){document.getElementById('rule-modal').classList.remove('open')}
+function bgClose(e){if(e.target===document.getElementById('rule-modal'))closeRuleModal()}
+
+// toast
+function showToast(msg,type){
+  var t=document.getElementById('toast');
+  t.className='toast tok';
+  t.innerHTML='<i class="ti ti-circle-check"></i>'+msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},2500);
+}
+
+swSpec('kw');
+</script>
+</body>
+</html>
