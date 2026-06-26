@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>外呼系统重构 — 陈雨露</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8e8;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --tag-bg: #f0f0f0;
+      --accent: #1677ff;
+      --accent-bg: #e6f4ff;
+      --warn: #fa8c16;
+      --warn-bg: #fff7e6;
+      --danger: #ff4d4f;
+      --danger-bg: #fff1f0;
+      --ok: #52c41a;
+      --ok-bg: #f6ffed;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    .back-nav { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .back-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .back-link:hover { color: var(--text-primary); }
+    .project-header { padding: 56px 0 40px; border-bottom: 1px solid var(--border); }
+    .project-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .tag { font-size: 11px; background: var(--tag-bg); color: var(--text-secondary); padding: 3px 10px; border-radius: 20px; }
+    .project-date { font-size: 12px; color: var(--text-muted); }
+    .project-title { font-size: clamp(22px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .project-summary { font-size: 16px; color: var(--text-secondary); max-width: 560px; line-height: 1.7; }
+    .metrics-row { display: flex; gap: 32px; padding: 32px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .metric { flex: 1; min-width: 100px; }
+    .metric-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 12px; color: var(--text-muted); }
+    .content-section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+    .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+    .content-text { font-size: 15px; color: var(--text-secondary); line-height: 1.8; max-width: 600px; }
+    .content-text p + p { margin-top: 14px; }
+
+    /* 时间线 */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item { display: flex; gap: 20px; padding: 14px 0; border-top: 1px solid var(--border); }
+    .tl-item:first-child { border-top: none; }
+    .tl-date { font-size: 12px; color: var(--text-muted); width: 60px; flex-shrink: 0; padding-top: 2px; font-variant-numeric: tabular-nums; }
+    .tl-content {}
+    .tl-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .tl-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .tl-badge { font-size: 10px; padding: 1px 7px; border-radius: 3px; font-weight: 500; }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-ok { background: var(--ok-bg); color: var(--ok); }
+    .badge-blue { background: var(--accent-bg); color: var(--accent); }
+
+    /* 举措卡片 */
+    .measures-grid { display: flex; flex-direction: column; gap: 0; }
+    .measure-item { padding: 16px 0; border-top: 1px solid var(--border); }
+    .measure-item:first-child { border-top: none; }
+    .measure-num { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: .06em; text-transform: uppercase; }
+    .measure-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .measure-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+    .measure-sub { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .measure-sub-item { font-size: 12px; color: var(--text-secondary); padding-left: 12px; border-left: 2px solid var(--border); line-height: 1.6; }
+
+    /* 四位一体 */
+    .four-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+    .four-card { padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+    .four-card-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .four-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* 典型 case */
+    .case-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+    .case-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+    .case-section { margin-bottom: 16px; }
+    .case-section-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    .case-events { display: flex; flex-direction: column; gap: 8px; }
+    .case-event { display: flex; gap: 12px; align-items: flex-start; }
+    .case-event-date { font-size: 12px; color: var(--accent); font-weight: 600; width: 52px; flex-shrink: 0; font-variant-numeric: tabular-nums; padding-top: 1px; }
+    .case-event-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .case-event-text strong { color: var(--text-primary); }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step { display: flex; gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); }
+    .process-step:first-child { border-top: none; }
+    .step-num { font-size: 12px; color: var(--text-muted); width: 24px; flex-shrink: 0; padding-top: 2px; }
+    .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    footer { padding: 32px 0 48px; font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="back-nav">
+    <div class="container">
+      <a class="back-link" href="../index.html">← 返回主页</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="project-header">
+      <div class="project-meta-row">
+        <span class="tag">跨部门协同</span>
+        <span class="tag">系统重构</span>
+        <span class="tag">合规</span>
+        <span class="project-date">2025 · 核桃编程</span>
+      </div>
+      <h1 class="project-title">外呼系统重构</h1>
+      <p class="project-summary">
+        315 后监管持续收紧，外呼资源急剧缩减，接通率下滑、部分项目被迫暂停。以应届生身份接手外呼产品，在高压监管周期内同步推进线路侧扩容合规、系统侧招标重建——2025 年 8 月完成多家供应商接入，2026 年 4 月新系统正式嵌入 CRM 平台实现本地化部署，全团队外呼零中断，接通率提升 10%+。
+      </p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value">零中断</div>
+        <div class="metric-label">危机期间业务保障</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">+10%+</div>
+        <div class="metric-label">接通率提升</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">4层</div>
+        <div class="metric-label">号段资源池（小号/固话/400/700）</div>
+      </div>
+    </div>
+
+    <!-- 背景 -->
+    <div class="content-section">
+      <p class="section-label">Background</p>
+      <div class="content-text">
+        <p>2025 年 315 曝光小号扰民乱象后，监管政策进入高强度收紧周期。工信部、运营商、管局形成三级联动：工信部出政策，运营商落执行，并在 7 月、9 月、年底分三次向工信部汇报投诉管控成果——这意味着每次汇报节点前，监管压力都会集中爆发。</p>
+        <p>对公司外呼业务的冲击是实质性的：提示音强制插播导致用户挂断率上升，平均通话时长从 70 秒直降至 49 秒；小号资源收紧，部分线路因投诉濒临关停；外呼时间窗口被不断压缩；市场召回、AI 外呼等项目曾被迫暂停。</p>
+      </div>
+
+      <!-- 政策时间线 -->
+      <div style="margin-top: 24px;">
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; letter-spacing: .06em; text-transform: uppercase;">政策时间线</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-date">3.15</div>
+            <div class="tl-content">
+              <div class="tl-title">央视曝光小号扰民 <span class="tl-badge badge-danger">行业震动</span></div>
+              <div class="tl-desc">小号资源开始收紧，外呼业务整体进入高风险期。</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">3.29</div>
+            <div class="tl-content">
+              <div class="tl-title">工信部要求插播提示音 <span class="tl-badge badge-danger">直接影响</span></div>
+              <div class="tl-desc">所有小号接听后须插播提示音，初期用户挂断率上升，平均通话时长从 70 秒降至 49 秒。</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">6.5</div>
+            <div class="tl-content">
+              <div class="tl-title">工信部专项整治行动 <span class="tl-badge badge-warn">压力升级</span></div>
+              <div class="tl-desc">部署营销电话扰民专项整治，要求 7 月底前取得成效，7 月汇报节点临近，监管压力集中释放。</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">7.4</div>
+            <div class="tl-content">
+              <div class="tl-title">运营商要求重新认证来电提示音</div>
+              <div class="tl-desc">企业来电提示音必须包含企业简称，推动定制提示音全覆盖改造。</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">8月</div>
+            <div class="tl-content">
+              <div class="tl-title">700 专用号段政策落地 <span class="tl-badge badge-blue">新方向</span></div>
+              <div class="tl-desc">工信部明确要求 10 月前所有商业外呼迁移至 700 专用号段，启动 700 号段接入准备。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 举措 -->
+    <div class="content-section">
+      <p class="section-label">My Process</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">资源扩容：建立多层次号段资源池</div>
+            <div class="step-desc">4 月开始与采购协同推进新线路供应商招标，5 月发布招标，6 月筛选，7 月完成供应商测试、合同签署与合规报备。同时拓展线路类型，建立小号、固话、400、700 号段四层资源池，单一类型或单一供应商异常时可快速切换，降低整体风险暴露。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">合规改造：从提示音到外呼规范全覆盖</div>
+            <div class="step-desc">4 月完成从通用提示音到「核桃编程来电」定制提示音的全覆盖改造，7 月跟进运营商新规完成重新认证。推进 400 号码企业认证，部分安卓手机已可显示「核桃编程」来电标识。同时与业务部门协同制定外呼规范操作指南，明确建议呼叫时段和触达频次，从源头减少投诉。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">动态调度：根据投诉率实时分配线路资源</div>
+            <div class="step-desc">6 月 24 日上线线路资源调配机制，根据各业务线的投诉率和接通率变动，动态分配最优线路，避免个别高投诉项目影响全局资源。同时识别并修复了系统中黑名单失效的问题，在 CRM 侧搭建黑名单能力，进一步降低投诉风险。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">应急响应：典型危机处置</div>
+            <div class="step-desc">7 月汇报节点前，线路投诉压力集中爆发——6 月 19 日接通率从 30% 降至 20%，7 月 7 日外呼被要求提前至晚 8 点，7 月 11 日进一步压缩至晚 7 点。7 月 12 日完成 400 号段接入，支持延长至晚 9 点；7 月 16 日引入新供应商线路，在严格监管下将外呼时间延长至晚 10 点，保障业务连续性至今。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">05</div>
+          <div class="step-content">
+            <div class="step-title">系统重构：主导新外呼系统建设与 CRM 本地化接入</div>
+            <div class="step-desc">在稳住线路侧的同时，同步推进外呼系统的招标与替换。原有系统依赖第三方 SaaS，能力边界限制了很多调度和合规动作（如线路自动切换、黑名单联动等）。新系统招标联动了供应链、法务、运维、安全、技术等多个部门，完成公开招标流程，2025 年 8 月完成多家供应商接入；2026 年 4 月新外呼系统正式嵌入 CRM 平台，实现本地化部署，打通外呼与客户数据的完整链路，为后续智能调度和合规管控提供系统底座。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 当前能力 -->
+    <div class="content-section">
+      <p class="section-label">Current State</p>
+      <div class="content-text" style="margin-bottom: 16px;">
+        <p>经过这一轮改造，目前已构建「四位一体」外呼保障体系：</p>
+      </div>
+      <div class="four-grid">
+        <div class="four-card">
+          <div class="four-card-title">多元化资源池</div>
+          <div class="four-card-desc">小号、固话、400、700 四类号段，多供应商覆盖，单点故障不影响全局。</div>
+        </div>
+        <div class="four-card">
+          <div class="four-card-title">智能调度机制</div>
+          <div class="four-card-desc">根据投诉率、接通率等指标动态分配最优线路，高风险项目隔离管控。</div>
+        </div>
+        <div class="four-card">
+          <div class="four-card-title">应急响应预案</div>
+          <div class="four-card-desc">建立分级响应机制，最快 1 小时内处理突发线路异常，危机期间保障零中断。</div>
+        </div>
+        <div class="four-card">
+          <div class="four-card-title">合规保障体系</div>
+          <div class="four-card-desc">定制提示音、外呼时段、触达频次全面符合监管要求，持续跟踪政策节奏。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 复盘 -->
+    <div class="content-section">
+      <p class="section-label">Reflection</p>
+      <div class="content-text">
+        <p>这个项目最特殊的地方在于，它是在一个持续变化的外部环境里做的——政策每隔几周就有新动向，每次调整都可能直接影响线路资源。传统的「需求 → 评估 → 排期」节奏根本跟不上，更多是在做「预判 + 快速响应」。</p>
+        <p>比较有价值的判断是提前关注管局的汇报节奏（7 月、9 月、年底），在每次汇报前主动收紧资源储备和合规动作，而不是等问题爆发再处理。这让我们在 7 月压力最大的时候，比大多数竞品提前完成了线路切换。</p>
+        <p>如果有一件事想做但还没做好，是把现在依赖人工跟盯的线路调度能力真正系统化——当前受制于第三方外呼系统的能力边界，很多调度动作还是靠人肉。这是下一阶段的重点。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <a href="../index.html" style="color:inherit;text-decoration:none;">← 返回作品集主页</a>
+      &emsp;·&emsp;© 2025 陈雨露
+    </div>
+  </footer>
+
+</body>
+</html>
