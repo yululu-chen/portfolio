@@ -3,373 +3,517 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>yulu作品集</title>
+  <title>陈雨露 — AI 产品经理</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #fafafa;
+      --bg: #f7f7f5;
       --surface: #ffffff;
-      --border: #e8e8e8;
-      --text-primary: #111111;
-      --text-secondary: #666666;
-      --text-muted: #999999;
-      --accent: #111111;
-      --tag-bg: #f0f0f0;
-      font-size: 16px;
+      --border: #e8e8e4;
+      --border-hover: #d0d0ca;
+      --text-primary: #0f0f0e;
+      --text-secondary: #6b6b63;
+      --text-muted: #a8a89e;
+      --tag-bg: #eeeee8;
+      --tag-text: #5c5c54;
+      --accent: #0f0f0e;
+      --blue: #1a6dff;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; }
 
     body {
       background: var(--bg);
       color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Layout ── */
+    /* ── 整体容器 ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
     .container {
-      max-width: 720px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 32px;
+      width: 100%;
     }
 
-    /* ── Header / Hero ── */
+    /* ══════════════════════════
+       HEADER
+    ══════════════════════════ */
     header {
-      padding: 80px 0 60px;
-      border-bottom: 1px solid var(--border);
+      padding: 72px 0 64px;
     }
 
-    .hero-label {
-      font-size: 12px;
+    .header-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .hero-left {}
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 1px;
+      background: var(--text-muted);
     }
 
     .hero-name {
-      font-size: clamp(28px, 5vw, 40px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 16px;
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 750;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      color: var(--text-primary);
     }
 
     .hero-bio {
-      font-size: 16px;
-      color: var(--text-secondary);
-      max-width: 480px;
-      line-height: 1.7;
-    }
-
-    .hero-meta {
-      display: flex;
-      gap: 20px;
-      margin-top: 28px;
-      flex-wrap: wrap;
-    }
-
-    .hero-meta a {
-      font-size: 13px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px;
-      transition: color 0.15s, border-color 0.15s;
-    }
-
-    .hero-meta a:hover {
-      color: var(--text-primary);
-      border-color: var(--text-primary);
-    }
-
-    /* ── Section ── */
-    section {
-      padding: 56px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    section:last-of-type { border-bottom: none; }
-
-    .section-label {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-    }
-
-    /* ── Project Cards ── */
-    .project-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .project-card {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 20px 0;
-      border-top: 1px solid var(--border);
-      text-decoration: none;
-      color: inherit;
-      transition: opacity 0.15s;
-    }
-
-    .project-card:hover { opacity: 0.6; }
-
-    .project-card:first-child { border-top: none; }
-
-    .project-card-left {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .project-title {
       font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .project-desc {
-      font-size: 13px;
       color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: 420px;
+      line-height: 1.75;
     }
 
-    .project-card-right {
+    .hero-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
+      gap: 10px;
       flex-shrink: 0;
+      padding-bottom: 4px;
     }
 
-    .project-date {
+    .hero-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-scroll {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
       color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .hero-scroll:hover { color: var(--text-primary); }
+
+    .hero-scroll svg {
+      transition: transform 0.2s;
+    }
+
+    .hero-scroll:hover svg { transform: translateY(2px); }
+
+    /* ══════════════════════════
+       DIVIDER
+    ══════════════════════════ */
+    .divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ══════════════════════════
+       MAIN GRID
+    ══════════════════════════ */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 56px 0;
+    }
+
+    .col {
+      padding-right: 48px;
+    }
+
+    .col + .col {
+      padding-right: 0;
+      padding-left: 48px;
+      border-left: 1px solid var(--border);
+    }
+
+    /* ── 区块标题 ── */
+    .col-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .col-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    .col-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--tag-bg);
+      padding: 1px 7px;
+      border-radius: 20px;
+    }
+
+    /* ── 项目卡片 ── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card {
+      display: block;
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.18s ease;
+      position: relative;
+    }
+
+    .project-card:first-child { border-top: none; }
+
+    .project-card:hover .project-title {
+      color: var(--blue);
+    }
+
+    .project-card:hover .project-arrow {
+      opacity: 1;
+      transform: translate(2px, -2px);
+    }
+
+    .project-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .project-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      transition: color 0.18s;
+      flex: 1;
+    }
+
+    .project-arrow {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.18s, transform 0.18s;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .tag-list {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
     .tag {
-      font-size: 11px;
+      font-size: 10px;
       background: var(--tag-bg);
-      color: var(--text-secondary);
+      color: var(--tag-text);
       padding: 2px 8px;
       border-radius: 20px;
+      font-weight: 500;
     }
 
-    /* ── About ── */
-    .about-text {
-      font-size: 15px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      max-width: 560px;
+    .project-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
-    .about-text p + p { margin-top: 16px; }
+    /* 占位卡片 */
+    .project-card.placeholder {
+      opacity: 0.4;
+      pointer-events: none;
+    }
 
-    /* ── Skills Grid ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
+    .placeholder .project-title {
+      color: var(--text-muted);
+    }
+
+    /* 占位虚线 */
+    .coming-soon-block {
+      border: 1.5px dashed var(--border-hover);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
       margin-top: 4px;
     }
 
-    .skill-item {
-      font-size: 13px;
-      color: var(--text-secondary);
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
+    .coming-soon-block .cs-icon {
+      font-size: 20px;
+      margin-bottom: 6px;
+      opacity: 0.4;
     }
 
-    .skill-item span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .coming-soon-block .cs-text {
+      font-size: 12px;
+      line-height: 1.6;
     }
 
-    /* ── Contact ── */
-    .contact-grid {
+    /* ══════════════════════════
+       CONTACT
+    ══════════════════════════ */
+    .contact-section {
+      padding: 40px 0 64px;
+      border-top: 1px solid var(--border);
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .contact-row {
-      display: flex;
-      gap: 16px;
       align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
     }
 
     .contact-label {
       font-size: 12px;
-      color: var(--text-muted);
-      width: 60px;
-      flex-shrink: 0;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
     }
 
-    .contact-value {
+    .contact-items {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .contact-item-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .contact-item-value {
       font-size: 14px;
       color: var(--text-primary);
+      font-weight: 500;
     }
-
-    .contact-value a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px;
-      transition: border-color 0.15s;
-    }
-
-    .contact-value a:hover { border-color: var(--text-primary); }
 
     /* ── Footer ── */
     footer {
-      padding: 32px 0 48px;
+      margin-top: auto;
+      padding: 20px 0 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       font-size: 12px;
       color: var(--text-muted);
     }
 
     /* ── Responsive ── */
-    @media (max-width: 480px) {
-      .project-card {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .project-card-right {
-        align-items: flex-start;
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
+    @media (max-width: 640px) {
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .hero-right { align-items: flex-start; }
+      .main-grid { grid-template-columns: 1fr; }
+      .col { padding-right: 0; }
+      .col + .col { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 48px; margin-top: 0; }
+      .contact-section { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
+<div class="page">
 
-  <!-- ═══════════════ HEADER ═══════════════ -->
+  <!-- ══ HEADER ══ -->
   <header>
     <div class="container">
-      <p class="hero-label">AI Product Manager</p>
-      <h1 class="hero-name">yulu作品集</h1>
-      <p class="hero-bio">
-        这里记录了我做过的几个产品项目—— demo、思路、复盘
-      </p>
-      <div class="hero-meta">
-        <span style="font-size:13px;color:var(--text-secondary)">yululu.c@gmail.com</span>
-        <a href="#projects">查看项目 ↓</a>
+      <div class="header-inner">
+        <div class="hero-left">
+          <div class="hero-eyebrow">AI Product Manager</div>
+          <h1 class="hero-name">陈雨露</h1>
+          <p class="hero-bio">这里记录了我做过的几个产品项目——背后的思路、取舍和复盘。</p>
+        </div>
+        <div class="hero-right">
+          <span class="hero-email">yululu.c@gmail.com</span>
+          <a class="hero-scroll" href="#projects">
+            查看项目
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </header>
 
+  <div class="divider"></div>
+
+  <!-- ══ MAIN ══ -->
   <div class="container">
+    <div class="main-grid" id="projects">
 
-    <!-- ═══════════════ PROJECTS ═══════════════ -->
-    <section id="projects">
-      <p class="section-label">Selected Projects</p>
-      <div class="project-list">
+      <!-- 左列：工作项目 -->
+      <div class="col">
+        <div class="col-header">
+          <span class="col-title">工作项目</span>
+          <span class="col-count">4</span>
+        </div>
+        <div class="project-list">
 
-        <!-- Project 1 -->
-        <a class="project-card" href="projects/project-01.html">
-          <div class="project-card-left">
-            <div class="project-title">AI 质检系统</div>
-            <div class="project-desc">从 0 到 1 搭建 AI 质检能力，工单扫描量提升 15 倍，实现抽检到全量覆盖</div>
-          </div>
-          <div class="project-card-right">
-            <div class="project-date">2026</div>
-            <div class="tag-list">
-              <span class="tag">AI 质检</span>
-              <span class="tag">0→1</span>
-              <span class="tag">LLM</span>
+          <a class="project-card" href="projects/project-01.html">
+            <div class="project-card-top">
+              <div class="project-title">AI 质检系统</div>
+              <span class="project-arrow">↗</span>
             </div>
-          </div>
-        </a>
-
-        <!-- Project 2 -->
-        <a class="project-card" href="projects/project-02.html">
-          <div class="project-card-left">
-            <div class="project-title">电访质量分析</div>
-            <div class="project-desc">整合全渠道沟通数据，接入 AI 摘要与 ASR，查询动线减少，返检率提升7%</div>
-          </div>
-          <div class="project-card-right">
-            <div class="project-date">2026</div>
-            <div class="tag-list">
-              <span class="tag">AI 分析</span>
-              <span class="tag">ASR</span>
-              <span class="tag">0→1</span>
+            <div class="project-desc">从 0 到 1 搭建 AI 质检能力，工单扫描量提升 15 倍，实现从抽检到全量覆盖</div>
+            <div class="project-footer">
+              <div class="tag-list">
+                <span class="tag">AI 质检</span>
+                <span class="tag">0→1</span>
+                <span class="tag">LLM</span>
+              </div>
+              <span class="project-date">2024</span>
             </div>
-          </div>
-        </a>
+          </a>
 
-        <!-- Project 3 -->
-        <a class="project-card" href="projects/project-03.html">
-          <div class="project-card-left">
-            <div class="project-title">现场管理数据平台</div>
+          <a class="project-card" href="projects/project-02.html">
+            <div class="project-card-top">
+              <div class="project-title">电访质量分析</div>
+              <span class="project-arrow">↗</span>
+            </div>
+            <div class="project-desc">整合全渠道沟通数据，接入 AI 摘要与 ASR，查询动线从 5 步压缩至 2 步</div>
+            <div class="project-footer">
+              <div class="tag-list">
+                <span class="tag">AI 分析</span>
+                <span class="tag">ASR</span>
+                <span class="tag">0→1</span>
+              </div>
+              <span class="project-date">2024</span>
+            </div>
+          </a>
+
+          <a class="project-card" href="projects/project-03.html">
+            <div class="project-card-top">
+              <div class="project-title">现场管理数据平台</div>
+              <span class="project-arrow">↗</span>
+            </div>
             <div class="project-desc">建立企微回复率 + 电访双指标闭环，工作日回复率提升 8%，风险会话减少 12%+</div>
-          </div>
-          <div class="project-card-right">
-            <div class="project-date">2025</div>
-            <div class="tag-list">
-              <span class="tag">数据驱动</span>
-              <span class="tag">B端</span>
+            <div class="project-footer">
+              <div class="tag-list">
+                <span class="tag">数据驱动</span>
+                <span class="tag">B端</span>
+              </div>
+              <span class="project-date">2024</span>
             </div>
-          </div>
-        </a>
+          </a>
 
-        <!-- Project 4 -->
-        <a class="project-card" href="projects/project-04.html">
-          <div class="project-card-left">
-            <div class="project-title">外呼系统重构</div>
+          <a class="project-card" href="projects/project-04.html">
+            <div class="project-card-top">
+              <div class="project-title">外呼系统重构</div>
+              <span class="project-arrow">↗</span>
+            </div>
             <div class="project-desc">315 危机下跨部门协同保障外呼零中断，主导新系统建设并嵌入 CRM 平台</div>
-          </div>
-          <div class="project-card-right">
-            <div class="project-date">2025</div>
-            <div class="tag-list">
-              <span class="tag">跨部门协同</span>
-              <span class="tag">系统重构</span>
+            <div class="project-footer">
+              <div class="tag-list">
+                <span class="tag">跨部门协同</span>
+                <span class="tag">系统重构</span>
+              </div>
+              <span class="project-date">2025</span>
             </div>
-          </div>
-        </a>
+          </a>
 
-      </div>
-    </section>
-
-    <!-- ═══════════════ CONTACT ═══════════════ -->
-    <section id="contact">
-      <p class="section-label">Contact</p>
-      <div class="contact-grid">
-        <div class="contact-row">
-          <span class="contact-label">Email</span>
-          <span class="contact-value">yululu.c@gmail.com</span>
         </div>
       </div>
-    </section>
+
+      <!-- 右列：个人项目 -->
+      <div class="col">
+        <div class="col-header">
+          <span class="col-title">个人项目</span>
+        </div>
+        <div class="coming-soon-block">
+          <div class="cs-icon">⚙</div>
+          <div class="cs-text">小工具、小游戏等个人项目<br>demo 陆续补充中</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ CONTACT ══ -->
+    <div class="contact-section" id="contact">
+      <div>
+        <div class="contact-label">联系方式</div>
+        <div class="contact-items">
+          <div class="contact-item">
+            <span class="contact-item-label">邮箱</span>
+            <span class="contact-item-value">yululu.c@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-label">微信</span>
+            <span class="contact-item-value">13052726725</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
-  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <!-- ══ FOOTER ══ -->
   <footer>
     <div class="container">
-      © 2026 yulu · 所有项目数据已脱敏处理
+      <div class="footer-inner">
+        <span>© 2025 陈雨露</span>
+        <span>所有项目数据已脱敏处理</span>
+      </div>
     </div>
   </footer>
 
+</div>
 </body>
 </html>
