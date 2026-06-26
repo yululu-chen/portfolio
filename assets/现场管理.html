@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>现场管理工作台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1677ff;--blue-bg:#e6f4ff;--blue-light:#91caff;
+  --green:#52c41a;--green-bg:#f6ffed;--green-light:#b7eb8f;
+  --red:#ff4d4f;--red-bg:#fff1f0;
+  --gold:#faad14;--gold-bg:#fffbe6;
+  --orange:#fa8c16;
+  --purple:#722ed1;
+  --text:#000000e0;--text2:#00000073;--text3:#00000040;
+  --bd:#d9d9d9;--bd2:#f0f0f0;
+  --bg:#fff;--bg2:#f5f5f5;--bg3:#fafafa;
+  --nav:#001529;--nav2:#0a2540;
+  --r:6px;--r2:8px;
+  --sh:0 1px 2px rgba(0,0,0,.03),0 2px 8px rgba(0,0,0,.06);
+  --font:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+html,body{height:100%;font-family:var(--font);font-size:14px;color:var(--text);background:var(--bg);overflow:hidden}
+.layout{display:flex;height:100vh}
+
+/* ══ 侧边栏 ══ */
+.sider{width:168px;background:var(--nav);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.logo{display:flex;align-items:center;gap:8px;padding:0 16px;height:52px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo-icon{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:16px;height:16px;color:#fff}
+.logo-text{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.nav-section{padding:8px 0}
+.nav-label{font-size:11px;color:rgba(255,255,255,.3);padding:10px 16px 4px;letter-spacing:.06em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;transition:all .15s;position:relative}
+.nav-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05)}
+.nav-item.active{color:#fff;background:var(--blue)}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:.8}
+.nav-item.active svg{opacity:1}
+
+/* ══ 主内容 ══ */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0}
+
+/* ══ 顶部栏 ══ */
+.topbar{height:52px;background:var(--bg);border-bottom:1px solid var(--bd2);display:flex;align-items:center;padding:0 20px;gap:0;flex-shrink:0;position:sticky;top:0;z-index:10}
+.breadcrumb{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.breadcrumb span{color:var(--text)}
+.tab-group{display:flex;margin-left:24px;height:100%}
+.tab{display:flex;align-items:center;padding:0 16px;font-size:14px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;height:100%;transition:all .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.tab:hover:not(.active){color:var(--text)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.primary-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:6px 16px;font-size:13px;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:.15s}
+.primary-btn:hover{background:#4096ff}
+
+/* ══ 筛选栏 ══ */
+.filter-wrap{background:var(--bg);border-bottom:1px solid var(--bd2);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.seg-btns{display:flex;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.seg-btn{padding:4px 12px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--bg);border:none;font-family:var(--font);transition:.12s}
+.seg-btn.active{background:var(--blue);color:#fff}
+.seg-btn:hover:not(.active){background:var(--bg2)}
+.f-label{font-size:12px;color:var(--text2);white-space:nowrap}
+.f-input{padding:4px 8px;border:1px solid var(--bd);border-radius:var(--r);font-size:12px;color:var(--text);background:var(--bg);outline:none;font-family:var(--font)}
+.f-input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.f-select{padding:4px 22px 4px 8px;border:1px solid var(--bd);border-radius:var(--r);font-size:12px;outline:none;background:var(--bg);color:var(--text);font-family:var(--font);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23bbb'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.f-select:focus{border-color:var(--blue)}
+.f-check{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);white-space:nowrap;cursor:pointer}
+.f-check input{accent-color:var(--blue);cursor:pointer}
+.f-divider{width:1px;height:16px;background:var(--bd2);flex-shrink:0}
+.ghost-btn{padding:4px 12px;border:1px solid var(--bd);border-radius:var(--r);font-size:12px;cursor:pointer;background:var(--bg);color:var(--text2);font-family:var(--font);transition:.12s}
+.ghost-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ══ 内容区 ══ */
+.content{padding:16px 20px;flex:1;background:var(--bg)}
+
+/* ══ 区块标题 ══ */
+.block-title{font-size:13px;color:var(--text2);text-align:center;margin:4px 0 12px;letter-spacing:.04em;font-weight:500}
+
+/* ══ 指标卡 ══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.kpi-card{background:var(--bg);border-radius:var(--r2);padding:14px 16px;box-shadow:var(--sh)}
+.kpi-label{font-size:12px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.kpi-label .tip{width:13px;height:13px;border-radius:50%;border:1px solid #ccc;font-size:9px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3)}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;color:var(--text);display:flex;align-items:baseline;gap:6px}
+.kpi-badge{font-size:11px;padding:2px 7px;border-radius:3px;font-weight:500;line-height:1.5;white-space:nowrap}
+.p4{background:#e6f4ff;color:#1677ff}
+.p3{background:#f6ffed;color:#389e0d}
+.p2{background:#fffbe6;color:#ad6800}
+.p1{background:#fff7e6;color:#d46b08}
+.p0{background:#fff1f0;color:#cf1322}
+.kpi-sub{font-size:12px;color:var(--text2);margin-top:8px;border-top:1px solid var(--bd2);padding-top:8px}
+.kpi-sub .sv{font-size:18px;font-weight:700;color:var(--text);display:block;margin-top:2px}
+.kpi-risk{font-size:22px;font-weight:700;line-height:1}
+.risk-warn{color:var(--gold)}
+.risk-ok{color:var(--green)}
+.risk-danger{color:var(--red)}
+
+/* ══ 图表卡 ══ */
+.chart-card{background:var(--bg);border-radius:var(--r2);padding:14px 16px;box-shadow:var(--sh);margin-bottom:10px}
+.chart-head{display:flex;align-items:center;margin-bottom:12px}
+.chart-title{font-size:13px;font-weight:600}
+.chart-legend{display:flex;gap:16px;margin-left:auto}
+.legend-dot{width:12px;height:3px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+.legend-item{font-size:12px;color:var(--text2)}
+.chart-container{position:relative}
+
+/* ══ 规则配置页 ══ */
+.config-page{padding:20px 28px}
+.config-back{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.back-circle{width:32px;height:32px;border-radius:50%;background:var(--blue-bg);border:1px solid var(--blue-light);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blue);font-size:16px;transition:.15s}
+.back-circle:hover{background:var(--blue);color:#fff}
+.config-h1{font-size:20px;font-weight:600}
+.config-link{font-size:13px;color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-bottom:20px}
+.config-link:hover{text-decoration:underline}
+.form-section-title{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.form-row{margin-bottom:14px}
+.form-label{font-size:13px;color:var(--text2);margin-bottom:6px}
+.form-textarea{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:var(--r);font-size:13px;resize:vertical;outline:none;font-family:var(--font);min-height:64px;color:var(--text)}
+.form-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+.char-count{text-align:right;font-size:11px;color:var(--text3);margin-top:3px}
+.config-tabs{display:flex;border-bottom:1px solid var(--bd2);margin-bottom:18px}
+.ctab{padding:9px 18px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s}
+.ctab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.sub-tabs{display:flex;margin-bottom:16px}
+.stab{padding:5px 16px;font-size:13px;cursor:pointer;color:var(--text2);background:var(--bg);border:1px solid var(--bd);margin-right:-1px;transition:.12s}
+.stab:first-child{border-radius:var(--r) 0 0 var(--r)}
+.stab:last-child{border-radius:0 var(--r) var(--r) 0}
+.stab.active{color:var(--blue);background:var(--blue-bg);border-color:var(--blue);z-index:1;position:relative}
+.config-info{font-size:13px;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.config-info strong{color:var(--text)}
+.mini-input{width:52px;padding:3px 6px;border:1px solid var(--bd);border-radius:4px;font-size:12px;text-align:center;outline:none;font-family:var(--font)}
+.mini-input:focus{border-color:var(--blue)}
+
+/* ══ 配置表格 ══ */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+.tbl th{background:#fafafa;padding:9px 12px;border:1px solid var(--bd2);color:var(--text2);font-weight:500;text-align:left;white-space:nowrap}
+.tbl td{padding:9px 12px;border:1px solid var(--bd2);vertical-align:middle}
+.range-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.level-badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:.04em}
+.lv-p0{background:#f5f5f5;color:#595959}
+.lv-p1{background:#e6f7ff;color:#0958d9}
+.lv-p2{background:#fffbe6;color:#ad6800}
+.lv-p3{background:#fff7e6;color:#d46b08}
+.lv-p4{background:#fff1f0;color:#cf1322}
+.risk-high{color:var(--red);font-weight:500}
+.risk-mid{color:var(--gold);font-weight:500}
+.risk-low{color:var(--green);font-weight:500}
+.check-group{display:flex;gap:10px;flex-wrap:wrap}
+.check-group label{display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer}
+.check-group input{accent-color:var(--blue)}
+.notify-badges{display:flex;gap:6px;flex-wrap:wrap}
+.notify-badge{display:flex;align-items:center;gap:4px;font-size:12px}
+.notify-badge input{accent-color:var(--blue)}
+
+/* ══ 豁免规则 ══ */
+.kw-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.kw{font-size:11px;padding:2px 9px;border-radius:3px;border:1px solid}
+.kw-blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-light)}
+.kw-green{background:var(--green-bg);color:#389e0d;border-color:var(--green-light)}
+
+/* ══ 工作日设置 ══ */
+.wd-card{border:2px solid var(--bd2);border-radius:var(--r2);padding:14px 18px;cursor:pointer;display:inline-flex;flex-direction:column;gap:5px;min-width:220px;transition:.15s}
+.wd-card:hover{border-color:var(--blue-light)}
+.wd-card.selected{border-color:var(--blue);background:var(--blue-bg)}
+.wd-card-title{font-size:14px;font-weight:500}
+.wd-card.selected .wd-card-title{color:var(--blue)}
+.wd-card-desc{font-size:12px;color:var(--text2)}
+
+/* ══ 表单底部 ══ */
+.form-footer{display:flex;align-items:center;gap:10px;padding-top:16px;border-top:1px solid var(--bd2);margin-top:4px}
+.form-footer .hint{font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══ 侧边栏 ══ -->
+<div class="sider">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <div class="logo-text">现场管理<br>工作台</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">整体数据</div>
+    <div class="nav-item active" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>企微回复
+    </div>
+    <div class="nav-item" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 3.12 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16z"/></svg>回访接待
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">明细数据</div>
+    <div class="nav-item" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>企微回复
+    </div>
+    <div class="nav-item" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 3.12 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16z"/></svg>回访接待
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">规则配置</div>
+    <div class="nav-item" id="nav-config" onclick="showConfig()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0"/></svg>企微回复
+    </div>
+    <div class="nav-item" onclick="showDashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 3.12 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16z"/></svg>回访接待
+    </div>
+  </div>
+</div>
+
+<!-- ══ 数据看板页 ══ -->
+<div class="main" id="pg-dashboard">
+  <!-- 顶部栏 -->
+  <div class="topbar">
+    <div class="breadcrumb">整体数据 <span style="color:var(--text3)">/</span> <span>企微回复</span></div>
+    <div class="tab-group">
+      <div class="tab active">总览</div>
+    </div>
+    <div class="topbar-right">
+      <button class="primary-btn" onclick="showConfig()">设置业务线规则</button>
+    </div>
+  </div>
+
+  <!-- 筛选栏 -->
+  <div class="filter-wrap">
+    <div class="seg-btns">
+      <div class="seg-btn active">今日</div>
+      <div class="seg-btn">近1天</div>
+      <div class="seg-btn">近7天</div>
+      <div class="seg-btn">近30天</div>
+    </div>
+    <span class="f-label">时间：</span>
+    <input class="f-input" value="2026-06-26 00:00" style="width:130px">
+    <span style="color:var(--text3);font-size:12px">—</span>
+    <input class="f-input" value="2026-06-26 23:59" style="width:130px">
+    <div class="f-divider"></div>
+    <span class="f-label">部门：</span>
+    <select class="f-select"><option>请选择部门</option><option>A事业部</option><option>B事业部</option></select>
+    <span class="f-label">城市：</span>
+    <select class="f-select"><option>请选择城市</option><option>北京</option><option>上海</option></select>
+    <div class="f-divider"></div>
+    <label class="f-check"><input type="checkbox"> 是否已履约</label>
+    <select class="f-select"><option>未履约</option><option>已履约</option></select>
+    <label class="f-check"><input type="checkbox"> 是否超时回复</label>
+    <select class="f-select"><option>超过24小时</option></select>
+    <div class="f-divider"></div>
+    <button class="ghost-btn">重置</button>
+    <button class="primary-btn" style="padding:4px 16px;font-size:12px">查询</button>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="content">
+    <!-- 实时数据 -->
+    <div class="block-title">实时数据（当前数据：12:55–14:55）</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 会话总条数</div>
+        <div class="kpi-val">5,843</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 人工响应率（工作日）</div>
+        <div class="kpi-val">81%<span class="kpi-badge p4">风险等级：P4</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 人工响应率（非工作日）</div>
+        <div class="kpi-val">71%<span class="kpi-badge p3">风险等级：P3</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 平均回复时长（工作日）</div>
+        <div class="kpi-val">31.65<span style="font-size:14px;margin-left:2px;color:var(--text2)">分钟</span></div>
+        <div class="kpi-sub">平均回复时长（非工作日）<span class="sv">51.67 分钟</span></div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="margin-bottom:14px">
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 未回复会话数</div>
+        <div class="kpi-risk risk-warn">677</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 高风险会话</div>
+        <div class="kpi-risk risk-ok">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 中风险会话</div>
+        <div class="kpi-risk risk-ok">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label"><span class="tip">?</span> 低风险会话</div>
+        <div class="kpi-risk risk-warn">157</div>
+      </div>
+    </div>
+
+    <!-- 今日累计 -->
+    <div class="block-title">今日累计</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">会话总条数</div>
+        <div class="kpi-val">16,774</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">人工响应率（工作日）</div>
+        <div class="kpi-val">59%<span class="kpi-badge p1">△ 风险等级：P1</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">人工响应率（非工作日）</div>
+        <div class="kpi-val">49%<span class="kpi-badge p0">△ 风险等级：P0</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">平均回复时长（工作日）</div>
+        <div class="kpi-val">31.27<span style="font-size:14px;margin-left:2px;color:var(--text2)">分钟</span></div>
+        <div class="kpi-sub">平均回复时长（非工作日）<span class="sv">104.08 分钟</span></div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="margin-bottom:14px">
+      <div class="kpi-card">
+        <div class="kpi-label">未回复会话数</div>
+        <div class="kpi-risk risk-warn">718</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">高风险会话</div>
+        <div class="kpi-risk risk-ok">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">中风险会话</div>
+        <div class="kpi-risk risk-warn">18</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">低风险会话</div>
+        <div class="kpi-risk risk-warn">171</div>
+      </div>
+    </div>
+
+    <!-- 趋势图 -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">人工响应率趋势</span>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#1677ff"></span>工作日</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#36cfc9"></span>非工作日</span>
+        </div>
+      </div>
+      <div class="chart-container"><canvas id="chart-line1" height="110"></canvas></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">平均回复时长趋势</span>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#1677ff"></span>工作日</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#36cfc9"></span>非工作日</span>
+        </div>
+      </div>
+      <div class="chart-container"><canvas id="chart-line2" height="90"></canvas></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-title">各部门人工响应率分布</span>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#1677ff"></span>工作日</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#36cfc9"></span>非工作日</span>
+        </div>
+      </div>
+      <div class="chart-container"><canvas id="chart-bar" height="110"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 规则配置页 ══ -->
+<div class="main" id="pg-config" style="display:none">
+  <div class="topbar">
+    <div class="breadcrumb">规则配置 <span style="color:var(--text3)">/</span> <span>企微回复</span></div>
+  </div>
+  <div class="config-page">
+    <div class="config-back">
+      <div class="back-circle" onclick="showDashboard()">←</div>
+      <div class="config-h1">【某业务线 - 企微】设置</div>
+    </div>
+    <div class="config-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      线上生效预警设置
+    </div>
+
+    <div class="form-section-title">预警条件设置</div>
+    <div class="form-row">
+      <div class="form-label">目标描述</div>
+      <textarea class="form-textarea" placeholder="请输入目标描述">某业务线</textarea>
+      <div class="char-count">5 / 150</div>
+    </div>
+
+    <div class="config-tabs">
+      <div class="ctab active" onclick="switchCtab(this,'ct-metric')">指标设置</div>
+      <div class="ctab" onclick="switchCtab(this,'ct-exempt')">豁免规则</div>
+      <div class="ctab" onclick="switchCtab(this,'ct-workday')">工作日设置</div>
+    </div>
+
+    <!-- 指标设置 -->
+    <div id="ct-metric">
+      <div class="sub-tabs">
+        <div class="stab active">工作日管理</div>
+        <div class="stab">非工作日管理</div>
+      </div>
+      <div class="config-info">
+        <span>考核时间：</span><strong>13:00:00 — 22:00:00</strong>
+        <span style="margin-left:16px">考核指标：及时响应 — 未</span>
+        <input class="mini-input" value="5">
+        <span>分钟内回复用户（该值需在1分钟~60分钟之间）</span>
+      </div>
+      <table class="tbl">
+        <thead><tr><th style="width:80px">告警等级</th><th>触发条件</th></tr></thead>
+        <tbody>
+          <tr><td><span class="level-badge lv-p0">P0</span></td><td><div class="range-row">考核周期内，过去1小时在规定时间内回复用户的占比在 <input class="mini-input" value="0"> % ~ <input class="mini-input" value="50"> % 之间</div></td></tr>
+          <tr><td><span class="level-badge lv-p1">P1</span></td><td><div class="range-row">考核周期内，过去1小时在规定时间内回复用户的占比在 <input class="mini-input" value="50"> % ~ <input class="mini-input" value="60"> % 之间</div></td></tr>
+          <tr><td><span class="level-badge lv-p2">P2</span></td><td><div class="range-row">考核周期内，过去1小时在规定时间内回复用户的占比在 <input class="mini-input" value="60"> % ~ <input class="mini-input" value="70"> % 之间</div></td></tr>
+          <tr><td><span class="level-badge lv-p3">P3</span></td><td><div class="range-row">考核周期内，过去1小时在规定时间内回复用户的占比在 <input class="mini-input" value="70"> % ~ <input class="mini-input" value="80"> % 之间</div></td></tr>
+          <tr><td><span class="level-badge lv-p4">P4</span></td><td><div class="range-row">考核周期内，过去1小时在规定时间内回复用户的占比在 <input class="mini-input" value="80"> % ~ <input class="mini-input" value="100"> % 之间</div></td></tr>
+        </tbody>
+      </table>
+      <div class="config-info" style="margin-bottom:10px">回复时长：当天内一直未回复用户</div>
+      <table class="tbl">
+        <thead><tr><th style="width:110px">会话风险等级</th><th>触发条件</th></tr></thead>
+        <tbody>
+          <tr><td><span class="risk-high">高风险会话</span></td><td><div class="range-row">考核周期内，当天会话超过 <input class="mini-input" value="6"> 小时 <input class="mini-input" value="0"> 分钟 未回复用户</div></td></tr>
+          <tr><td><span class="risk-mid">中风险会话</span></td><td><div class="range-row">考核周期内，当天会话超过 <input class="mini-input" value="3"> 小时 <input class="mini-input" value="0"> 分钟 未回复用户</div></td></tr>
+          <tr><td><span class="risk-low">低风险会话</span></td><td><div class="range-row">考核周期内，当天会话超过 <input class="mini-input" value="1"> 小时 <input class="mini-input" value="0"> 分钟 未回复用户</div></td></tr>
+        </tbody>
+      </table>
+      <div class="config-info" style="margin-bottom:10px;font-weight:500">触达方式 <span style="font-size:12px;width:14px;height:14px;border-radius:50%;border:1px solid #ccc;display:inline-flex;align-items:center;justify-content:center;color:var(--text3);cursor:pointer">?</span></div>
+      <table class="tbl">
+        <thead><tr><th>角色</th><th>接收告警等级通知</th><th>接收会话风险等级</th><th style="width:100px">通知方式</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>管理员</td>
+            <td><div class="check-group"><label><input type="checkbox" checked> P0</label><label><input type="checkbox" checked> P1</label><label><input type="checkbox" checked> P2</label><label><input type="checkbox" checked> P3</label><label><input type="checkbox"> P4</label></div></td>
+            <td style="font-size:12px;color:var(--text2)">未回复高风险 ≥ 0 个 &nbsp;·&nbsp; 未回复中风险 ≥ 0 个</td>
+            <td><div class="notify-badges"><span class="notify-badge"><input type="checkbox" checked> 飞书</span></div></td>
+          </tr>
+          <tr>
+            <td>主管</td>
+            <td><div class="check-group"><label><input type="checkbox" checked> P0</label><label><input type="checkbox" checked> P1</label><label><input type="checkbox" checked> P2</label><label><input type="checkbox" checked> P3</label><label><input type="checkbox"> P4</label></div></td>
+            <td style="font-size:12px;color:var(--text2)">未回复高风险 ≥ 0 个 &nbsp;·&nbsp; 未回复中风险 ≥ 0 个</td>
+            <td><div class="notify-badges"><span class="notify-badge"><input type="checkbox" checked> 飞书</span></div></td>
+          </tr>
+          <tr>
+            <td>老师</td>
+            <td><div class="check-group"><label><input type="checkbox" checked> P0</label><label><input type="checkbox" checked> P1</label><label><input type="checkbox" checked> P2</label><label><input type="checkbox" checked> P3</label><label><input type="checkbox"> P4</label></div></td>
+            <td style="font-size:12px;color:var(--text2)">未回复高风险 ≥ 0 个 &nbsp;·&nbsp; 未回复低风险 ≥ 0 个</td>
+            <td><div class="notify-badges"><span class="notify-badge"><input type="checkbox" checked> 飞书</span><span class="notify-badge"><input type="checkbox" checked> 企微</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="form-footer">
+        <button class="ghost-btn">重 置</button>
+        <button class="primary-btn">提 交</button>
+        <span class="hint">规则更新后次日 3:00 生效</span>
+      </div>
+    </div>
+
+    <!-- 豁免规则 -->
+    <div id="ct-exempt" style="display:none">
+      <table class="tbl">
+        <thead><tr><th style="width:110px">豁免规则</th><th>描述</th><th style="width:90px">应用场景</th><th style="width:60px">操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>文本格式</td>
+            <td>
+              <div class="kw-wrap">
+                <span class="kw kw-blue">ok</span><span class="kw kw-blue">谢谢</span><span class="kw kw-blue">好的</span><span class="kw kw-blue">好滴</span><span class="kw kw-blue">OK</span><span class="kw kw-blue">嗯嗯</span><span class="kw kw-blue">嗯嗯嗯</span><span class="kw kw-blue">感谢</span><span class="kw kw-blue">知道</span><span class="kw kw-blue">知道了</span><span class="kw kw-blue">收到</span><span class="kw kw-blue">收到哈</span><span class="kw kw-blue">好的收到</span><span class="kw kw-blue">好的哈</span><span class="kw kw-blue">了解</span><span class="kw kw-blue">了解了</span><span class="kw kw-blue">明白</span><span class="kw kw-blue">没问题</span><span class="kw kw-blue">哈哈</span><span class="kw kw-blue">哈哈哈</span><span class="kw kw-blue">嗯</span><span class="kw kw-blue">好</span><span class="kw kw-blue">谢谢老师</span><span class="kw kw-blue">感谢老师</span><span class="kw kw-blue">太感谢了</span><span class="kw kw-blue">麻烦你了</span><span class="kw kw-blue">辛苦了</span><span class="kw kw-blue">好棒</span><span class="kw kw-blue">好哒</span><span class="kw kw-blue">okok</span><span class="kw kw-blue">OKOK</span><span class="kw kw-blue">没问题的</span><span class="kw kw-blue">是的</span><span class="kw kw-blue">对的</span><span class="kw kw-blue">明白了</span>
+              </div>
+            </td>
+            <td>私聊、群聊</td>
+            <td><span style="color:var(--blue);font-size:12px;cursor:pointer">编辑</span></td>
+          </tr>
+          <tr>
+            <td>其他格式</td>
+            <td>
+              <div class="kw-wrap">
+                <span class="kw kw-green">私聊：企微消息条（时长低于2秒豁免）</span>
+                <span class="kw kw-green">企微通话记录</span>
+                <span class="kw kw-green">emoji</span>
+                <span class="kw kw-green">表情包</span>
+                <span class="kw kw-green">群：企微消息条（时长低于2秒豁免）</span>
+                <span class="kw kw-green">群接龙</span>
+                <span class="kw kw-green">企微通话记录</span>
+              </div>
+            </td>
+            <td>私聊、群聊</td>
+            <td><span style="color:var(--blue);font-size:12px;cursor:pointer">编辑</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="form-footer">
+        <button class="ghost-btn">重 置</button>
+        <button class="primary-btn">提 交</button>
+        <span class="hint">规则更新后次日 3:00 生效</span>
+      </div>
+    </div>
+
+    <!-- 工作日设置 -->
+    <div id="ct-workday" style="display:none">
+      <div class="config-info" style="margin-bottom:14px">
+        服务周期：首课解锁日期 - <input class="mini-input" value="9"> 天 ~ 首课解锁日期 + <input class="mini-input" value="5"> 天
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px">服务周期是否有休息日：</div>
+      <div style="display:flex;gap:12px;margin-bottom:24px">
+        <div class="wd-card"><div class="wd-card-title">是</div><div class="wd-card-desc">服务期间需要添加休息日</div></div>
+        <div class="wd-card selected"><div class="wd-card-title">否</div><div class="wd-card-desc">服务周期期间都是工作日</div></div>
+      </div>
+      <div class="form-footer">
+        <button class="ghost-btn">重 置</button>
+        <button class="primary-btn">提 交</button>
+        <span class="hint">规则更新后次日 3:00 生效</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+function showDashboard(){
+  document.getElementById('pg-dashboard').style.display='flex';
+  document.getElementById('pg-config').style.display='none';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelector('.nav-item').classList.add('active');
+}
+function showConfig(){
+  document.getElementById('pg-dashboard').style.display='none';
+  document.getElementById('pg-config').style.display='flex';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-config').classList.add('active');
+}
+function switchCtab(el,id){
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['ct-metric','ct-exempt','ct-workday'].forEach(t=>{
+    document.getElementById(t).style.display=t===id?'block':'none';
+  });
+}
+
+// 等 Chart.js 加载完成后初始化图表
+window.addEventListener('load', function(){
+  const commonOpts = {
+    responsive:true,
+    maintainAspectRatio:true,
+    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},
+    scales:{
+      x:{grid:{color:'#f0f0f0'},ticks:{font:{size:11},color:'#999'}},
+      y:{grid:{color:'#f0f0f0'},ticks:{font:{size:11},color:'#999'}}
+    }
+  };
+  const labels6 = ['06-01','06-05','06-10','06-15','06-20','06-25'];
+
+  new Chart(document.getElementById('chart-line1'),{
+    type:'line',
+    data:{
+      labels:labels6,
+      datasets:[
+        {label:'工作日',data:[68,72,75,71,78,81],borderColor:'#1677ff',backgroundColor:'rgba(22,119,255,.08)',tension:.4,pointRadius:4,pointBackgroundColor:'#1677ff',fill:true},
+        {label:'非工作日',data:[52,58,55,62,60,71],borderColor:'#36cfc9',backgroundColor:'rgba(54,207,201,.06)',tension:.4,pointRadius:4,pointBackgroundColor:'#36cfc9',fill:true}
+      ]
+    },
+    options:{...commonOpts,scales:{...commonOpts.scales,y:{...commonOpts.scales.y,ticks:{...commonOpts.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
+
+  new Chart(document.getElementById('chart-line2'),{
+    type:'line',
+    data:{
+      labels:['10:00','11:00','12:00','13:00','14:00'],
+      datasets:[
+        {label:'工作日',data:[42,38,35,32,31],borderColor:'#1677ff',backgroundColor:'rgba(22,119,255,.08)',tension:.4,pointRadius:4,pointBackgroundColor:'#1677ff',fill:true},
+        {label:'非工作日',data:[68,72,65,58,52],borderColor:'#36cfc9',backgroundColor:'rgba(54,207,201,.06)',tension:.4,pointRadius:4,pointBackgroundColor:'#36cfc9',fill:true}
+      ]
+    },
+    options:{...commonOpts,scales:{...commonOpts.scales,y:{...commonOpts.scales.y,ticks:{...commonOpts.scales.y.ticks,callback:v=>v+'min'}}}}
+  });
+
+  new Chart(document.getElementById('chart-bar'),{
+    type:'bar',
+    data:{
+      labels:['A组','B组','C组','D组','E组','F组','G组','H组','I组'],
+      datasets:[
+        {label:'工作日',data:[78,85,62,91,74,82,69,77,88],backgroundColor:'#1677ff',borderRadius:3,barPercentage:.5},
+        {label:'非工作日',data:[55,65,48,73,58,66,52,61,70],backgroundColor:'#36cfc9',borderRadius:3,barPercentage:.5}
+      ]
+    },
+    options:{...commonOpts,scales:{...commonOpts.scales,y:{...commonOpts.scales.y,ticks:{...commonOpts.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
+});
+</script>
+</body>
+</html>
