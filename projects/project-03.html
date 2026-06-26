@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>现场管理数据平台 — 陈雨露</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8e8;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --tag-bg: #f0f0f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+    .back-nav { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .back-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .back-link:hover { color: var(--text-primary); }
+    .project-header { padding: 56px 0 40px; border-bottom: 1px solid var(--border); }
+    .project-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .tag { font-size: 11px; background: var(--tag-bg); color: var(--text-secondary); padding: 3px 10px; border-radius: 20px; }
+    .project-date { font-size: 12px; color: var(--text-muted); }
+    .project-title { font-size: clamp(22px, 4vw, 32px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .project-summary { font-size: 16px; color: var(--text-secondary); max-width: 680px; line-height: 1.7; }
+    .metrics-row { display: flex; gap: 32px; padding: 32px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .metric { flex: 1; min-width: 100px; }
+    .metric-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 12px; color: var(--text-muted); }
+    .content-section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+    .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+    .content-text { font-size: 15px; color: var(--text-secondary); line-height: 1.8; max-width: 720px; }
+    .content-text p + p { margin-top: 14px; }
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step { display: flex; gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); }
+    .process-step:first-child { border-top: none; }
+    .step-num { font-size: 12px; color: var(--text-muted); width: 24px; flex-shrink: 0; padding-top: 2px; }
+    .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    footer { padding: 32px 0 48px; font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="back-nav">
+    <div class="container">
+      <a class="back-link" href="../index.html">← 返回主页</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="project-header">
+      <div class="project-meta-row">
+        <span class="tag">数据驱动</span>
+        <span class="tag">B端</span>
+        <span class="tag">0→1</span>
+        <span class="project-date">2024 · 核桃编程</span>
+      </div>
+      <h1 class="project-title">现场管理数据平台</h1>
+      <p class="project-summary">
+        管理层缺乏精细数据抓手，企微回复情况无法追踪，电访只有粗粒度的通时通次数据，问题发现滞后。从 0 到 1 搭建现场管理平台，建立企微回复率 + 电访双指标闭环，工作日回复率提升 8%，风险会话占比减少 12%+。
+      </p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-value">+8%</div>
+        <div class="metric-label">工作日回复率</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">-12%+</div>
+        <div class="metric-label">风险会话占比</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">分级预警</div>
+        <div class="metric-label">P0–P4 五级告警</div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Product Demo</p>
+    </div>
+
+  </div>
+
+  <!-- 全宽 demo -->
+  <div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);">
+    <iframe
+      src="../assets/现场管理.html"
+      title="现场管理数据平台 Demo"
+      sandbox="allow-scripts allow-same-origin"
+      style="width:100%;height:700px;border:none;display:block;"
+    ></iframe>
+    <a href="../assets/现场管理.html" target="_blank"
+      style="display:block;padding:10px;text-align:center;font-size:12px;color:var(--text-muted);text-decoration:none;border-top:1px solid var(--border);">
+      在新窗口中打开完整 Demo ↗
+    </a>
+  </div>
+
+  <div style="max-width:1200px;margin:0 auto;padding:0 48px;">
+    <div style="display:flex;gap:10px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;margin:16px 0 40px;">
+      <span style="font-size:14px;flex-shrink:0;margin-top:1px;">ⓘ</span>
+      <span style="font-size:12px;color:var(--text-muted);line-height:1.6;">Demo 中所有数据、部门名称、人员信息均为虚构或脱敏处理，不代表任何真实业务数据。</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="content-section">
+      <p class="section-label">Background</p>
+      <div class="content-text">
+        <p>老师在企微上与学员的沟通情况，管理层之前完全看不到——没有回复率数据，也没有未回复提醒。电访侧虽然有通时通次统计，但颗粒度太粗，无法判断哪些学员长时间没有被跟进、哪些对话存在风险。</p>
+        <p>问题的暴露往往是滞后的：投诉出现了，才知道某个学员好几天没有被回复。管理层需要一套能主动发现风险、及时触达的工具，而不是依赖事后复盘。</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">My Process</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">定义双指标体系</div>
+            <div class="step-desc">企微侧定义「及时回复率」+ 「对话回复时长」两个核心指标，支持业务自定义考核时段和阈值。电访侧补充「近 24 小时未联系学员」等细粒度指标，让数据颗粒度从天级下降到小时级。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">建立 P0–P4 分级告警规则</div>
+            <div class="step-desc">根据回复率区间设计五级告警（P0 最低，P4 最高），支持业务按不同角色（管理员、主管、老师）配置接收哪些级别的通知，触达方式支持飞书和企微，异常情况自动触达对应层级，不需要人工巡查。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">设计豁免规则，降低误告警</div>
+            <div class="step-desc">「好的」「嗯嗯」「收到」这类确认性回复，以及 emoji、表情包、短于 2 秒的语音条，不应计入未回复。设计豁免规则配置页，让业务可以自定义哪些内容视为有效回复，避免大量误告警影响使用信任度。</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">整体数据看板与明细下钻</div>
+            <div class="step-desc">提供整体数据看板（实时 + 今日累计）、各部门分布图表，支持按时间、部门、城市多维筛选。同时提供明细数据入口，管理层可以从全局视角定位风险，再下钻到具体学员或对话。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Reflection</p>
+      <div class="content-text">
+        <p>这个项目让我意识到「告警」本身是一件很容易做过的事。告警太多，会让人麻木；告警太少，起不到作用。豁免规则的设计反而是整个功能里花时间最长的部分——什么算「有效回复」，不同业务线的标准并不一样，需要给业务足够的配置空间，同时又不能让配置入口太复杂让人不愿意用。</p>
+        <p>上线后数据的变化是直接的：工作日回复率提升 8%，风险会话占比下降 12%+。老师行为的改进变得可量化追踪，管理层也第一次有了一个主动发现问题的工具，而不是等投诉。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <a href="../index.html" style="color:inherit;text-decoration:none;">← 返回作品集主页</a>
+      &emsp;·&emsp;© 2025 陈雨露
+    </div>
+  </footer>
+
+</body>
+</html>
