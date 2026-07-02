@@ -264,6 +264,7 @@
       <div class="content-text">
         <p>这个项目最特殊的地方在于，它是在一个持续变化的外部环境里做的——政策每隔几周就有新动向，传统的"需求→评估→排期"节奏根本跟不上。更多是在做"预判+快速响应"，在模糊中做决策。最有价值的判断是提前关注管局的汇报节奏，在压力集中释放前主动收紧资源储备——不是等问题爆发再处理，而是在信号还不清晰的时候就做出预判。</p>
         <p>这种在不确定环境中做产品决策的模式，可能是创业团队最需要的能力——不是等需求清晰再动手，是在信号模糊时就做出下一步判断。如果有一件事想做但还没做好，是把现在依赖人工跟盯的线路调度能力真正系统化——当前受制于第三方外呼系统的能力边界，很多调度动作还是靠人肉。这是下一阶段的重点。</p>
+        <p style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted);line-height:1.8;"><strong style="color:var(--text-secondary);font-size:12px;letter-spacing:.06em;text-transform:uppercase;">技术视角补充</strong><br>动态调度机制的核心是一个<strong style="color:var(--text-secondary);">基于实时指标的状态路由模型</strong>——投诉率 + 接通率作为输入，线路类型 + 号段资源池作为输出，每条线路有健康状态（正常/预警/濒临关停），调度引擎根据状态实时分配最优路径。4 层号段资源池（小号/固话/400/700）本质上是<strong style="color:var(--text-secondary);">多级 fallback</strong>：主资源异常时自动降级到次级资源，而不是人工判断后再手动切换。黑名单联动 CRM 是数据策略的一部分——投诉黑名单从第三方 SaaS 系统迁入自有 CRM，让调度引擎能直接读取黑名单状态做合规前置过滤，而非依赖外部系统逐条查询。</p>
       </div>
     </div>
 
