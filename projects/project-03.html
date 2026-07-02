@@ -62,7 +62,7 @@
 
     <div class="project-header">
       <div class="project-meta-row">
-        <span class="tag">数据驱动</span>
+        <span class="tag">信任设计</span>
         <span class="tag">B端</span>
         <span class="tag">0→1</span>
         <span class="project-date">2024 · 核桃编程</span>
@@ -164,6 +164,7 @@
       <div class="content-text">
         <p>这个项目让我意识到告警的信任设计是一个被低估的产品课题。告警太多，人麻木；告警太少，起不到作用。豁免规则的设计花了整个功能里最多的时间——"什么算有效回复"这件事，不同业务线的标准完全不同，需要给业务配置空间，但又不能让配置入口太复杂导致没人愿意用。信任不只是"数据准不准"，更是"人愿不愿意看、愿不愿意信"。</p>
         <p>后来做 AI 质检的信任设计时，我直接用了这个项目的经验——产品的可用性取决于人对系统的信任度，而信任度取决于你有没有认真处理"边界情况"。</p>
+        <p style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted);line-height:1.8;"><strong style="color:var(--text-secondary);font-size:12px;letter-spacing:.06em;text-transform:uppercase;">技术视角补充</strong><br>P0–P4 分级告警本质上是一个<strong style="color:var(--text-secondary);">多通道路由机制</strong>——不同风险等级路由到不同触达渠道（飞书即时消息、企微消息、每日汇总），平衡及时性与信息噪音。豁免规则是「edge-case mining」的直接实践：emoji、短于 2 秒的语音条、「好的」「嗯嗯」这类确认性回复——每一类边界情况都需要独立定义处理逻辑，而不是用一刀切的规则覆盖。<strong style="color:var(--text-secondary);">告警系统的信任度取决于你处理边界情况的质量，而非核心逻辑的完备性。</strong></p>
       </div>
     </div>
 
