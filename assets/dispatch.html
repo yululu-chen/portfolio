@@ -48,6 +48,7 @@
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
       height: 52px;
+      justify-content: space-between;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -226,6 +227,69 @@
     }
 
     /* AI 提取动画 */
+    .api-key-row {
+      margin: 14px 0 6px;
+    }
+
+    .api-key-toggle {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .radio-option input[type="radio"] {
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .api-key-row input[type="password"] {
+      margin-top: 10px;
+      width: 100%;
+      max-width: 360px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      background: var(--surface);
+      color: var(--text-primary);
+      transition: border-color 0.15s;
+      display: block;
+    }
+
+    .api-key-row input[type="password"]:focus { border-color: var(--blue); }
+
+    .api-key-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .error-block {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--red);
+      line-height: 1.6;
+    }
+
+    .error-block.show { display: block; }
+
     .extracting-overlay {
       display: none;
       margin-top: 24px;
@@ -544,16 +608,37 @@
     /* 行动项已确认遮罩 */
     .confirmed-overlay {
       display: none;
-      padding: 12px 16px;
+      padding: 10px 16px;
       background: var(--green-bg);
       border-top: 1px solid var(--green-border);
       font-size: 12px;
       color: var(--green);
       font-weight: 500;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .action-card.status-confirmed .confirmed-overlay {
-      display: block;
+      display: flex;
+    }
+
+    .btn-unconfirm {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--green-border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .btn-unconfirm:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
     }
 
     .action-card.status-confirmed .dispatch-selector,
@@ -571,19 +656,48 @@
 
     .edit-modal.show { display: block; }
 
-    .edit-modal textarea {
+    .edit-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .edit-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .edit-row .edit-field { flex: 1; }
+
+    .edit-field { display: flex; flex-direction: column; gap: 4px; }
+
+    .edit-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .edit-modal textarea,
+    .edit-modal input[type="text"] {
       width: 100%;
       border: 1px solid var(--blue-border);
       border-radius: var(--radius-sm);
-      padding: 8px 10px;
+      padding: 7px 10px;
       font-size: 13px;
       font-family: inherit;
       line-height: 1.5;
-      resize: none;
       outline: none;
       background: var(--surface);
-      margin-bottom: 8px;
+      color: var(--text-primary);
+      transition: border-color 0.15s;
     }
+
+    .edit-modal textarea { resize: none; }
+    .edit-modal textarea:focus,
+    .edit-modal input[type="text"]:focus { border-color: var(--blue); }
 
     .edit-modal-actions {
       display: flex;
@@ -774,6 +888,203 @@
     .design-note-text strong {
       color: var(--text-primary);
     }
+
+    /* ── 顶部飞书按钮 ── */
+    .feishu-btn {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .feishu-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-bg);
+    }
+
+    /* ── 飞书浮层 ── */
+    .guide-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 60px 16px 0;
+    }
+
+    .guide-overlay.open { display: flex; }
+
+    .guide-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 420px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      animation: fadeSlideIn 0.2s ease;
+    }
+
+    .guide-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+    }
+
+    .guide-panel-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .guide-close {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: var(--bg);
+      border-radius: 50%;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .guide-close:hover { background: var(--border); color: var(--text-primary); }
+
+    .guide-panel-body { padding: 4px 18px 20px; }
+
+    /* ── 飞书接入指引（旧页面底部版，保留样式供复用）── */
+    .feishu-guide {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .feishu-guide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .feishu-guide-header:hover { background: var(--bg); }
+
+    .feishu-guide-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .feishu-guide-toggle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .feishu-guide-body {
+      display: none;
+      padding: 0 18px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .feishu-guide-body.open { display: block; }
+
+    .guide-intro {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      padding: 14px 0 10px;
+    }
+
+    .guide-steps { display: flex; flex-direction: column; gap: 0; }
+
+    .guide-step {
+      display: flex;
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .guide-step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      width: 24px;
+      flex-shrink: 0;
+      padding-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .guide-step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .guide-step-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .guide-step-desc code {
+      background: var(--bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 11px;
+      word-break: break-all;
+    }
+
+    .webhook-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .webhook-input-row input {
+      flex: 1;
+      min-width: 200px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      background: var(--surface);
+      transition: border-color 0.15s;
+    }
+
+    .webhook-input-row input:focus { border-color: var(--blue); }
+
+    .webhook-saved {
+      font-size: 11px;
+      color: var(--green);
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -791,6 +1102,56 @@
       <span class="step-sep">›</span>
       <span class="step-pill" id="pill-3" onclick="goScreen(3)">③ 分发完成</span>
     </div>
+    <button class="feishu-btn" onclick="openGuide()">🔗 接入飞书</button>
+  </div>
+
+  <!-- 飞书指引浮层 -->
+  <div class="guide-overlay" id="guide-overlay" onclick="closeGuideIfBg(event)">
+    <div class="guide-panel" id="guide-panel">
+      <div class="guide-panel-header">
+        <span class="guide-panel-title">🔗 接入飞书真实发送</span>
+        <button class="guide-close" onclick="closeGuide()">✕</button>
+      </div>
+      <div class="guide-panel-body">
+        <p class="guide-intro">飞书「自定义机器人」支持浏览器直接 POST，无需后端，5 分钟配置完成即可真实发送消息到群里。</p>
+
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="guide-step-num">01</div>
+            <div class="guide-step-content">
+              <div class="guide-step-title">在飞书群添加自定义机器人</div>
+              <div class="guide-step-desc">打开目标飞书群 → 右上角「设置」→「群机器人」→「添加机器人」→ 选择「自定义机器人」→ 填写名称（如 Dispatch）→ 点击「添加」</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">02</div>
+            <div class="guide-step-content">
+              <div class="guide-step-title">复制 Webhook URL</div>
+              <div class="guide-step-desc">添加完成后，飞书会给你一个 Webhook 地址，格式为：<br><code>https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx</code><br>复制保存。</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">03</div>
+            <div class="guide-step-content">
+              <div class="guide-step-title">填入 Webhook URL 并保存</div>
+              <div class="guide-step-desc">保存后，分发时选择「飞书消息」，点击「一键分发」即可真实发送到群里。</div>
+              <div class="webhook-input-row">
+                <input type="text" id="feishu-webhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
+                <button class="btn-sm confirm" onclick="saveWebhook()">保存</button>
+              </div>
+              <div class="webhook-saved" id="webhook-saved"></div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">04</div>
+            <div class="guide-step-content">
+              <div class="guide-step-title">安全提示</div>
+              <div class="guide-step-desc">建议在飞书机器人设置里开启「签名校验」，防止 Webhook 被滥用。开启后需额外参数，可联系作者获取支持版本。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ══════════════════════════
@@ -803,13 +1164,22 @@
       <div class="s1-subtitle">AI 会提取出每一条行动项，等你确认后再分发——不是 AI 替你做决定，是 AI 把决定送到你面前。</div>
     </div>
 
-    <div class="demo-chips">
-      <span class="demo-chip active" id="chip-0" onclick="loadDemo(0)">示例 1：产品周会</span>
-      <span class="demo-chip" id="chip-1" onclick="loadDemo(1)">示例 2：客户访谈</span>
-      <span class="demo-chip" id="chip-2" onclick="loadDemo(2)">示例 3：跨部门对齐</span>
-    </div>
-
     <textarea class="transcript-box" id="transcript" placeholder="粘贴会议转录文本……"></textarea>
+
+    <div class="api-key-row">
+      <div class="api-key-toggle">
+        <label class="radio-option">
+          <input type="radio" name="key-mode" value="system" checked onchange="toggleKeyMode(this.value)" />
+          <span>使用系统 Key（免填）</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="key-mode" value="custom" onchange="toggleKeyMode(this.value)" />
+          <span>使用我自己的 Key</span>
+        </label>
+      </div>
+      <input type="password" id="api-key" placeholder="粘贴你的 API Key（兼容 OpenAI 格式）" autocomplete="off" style="display:none;" />
+    </div>
+    <div class="api-key-hint" id="key-hint">系统 Key 由作者提供，直接可用</div>
 
     <div class="s1-actions">
       <button class="btn-primary" onclick="startExtract()">AI 提取行动项 →</button>
@@ -820,8 +1190,10 @@
       <div class="extracting-dots">
         <span></span><span></span><span></span>
       </div>
-      <div class="extracting-text">正在分析转录内容，提取行动项…</div>
+      <div class="extracting-text" id="extracting-text">正在调用 DeepSeek 分析转录内容…</div>
     </div>
+
+    <div class="error-block" id="error-block"></div>
 
     <div class="design-note">
       <div class="design-note-icon">ⓘ</div>
@@ -871,7 +1243,7 @@
 
     <div class="design-note" style="margin-top:24px;">
       <div class="design-note-icon">ⓘ</div>
-      <div class="design-note-text"><strong>注：</strong>这是一个交互原型，分发动作均为模拟，并未真实对接飞书 / 日历 API。展示的是产品交互逻辑与信任机制的设计思路。</div>
+      <div class="design-note-text"><strong>注：</strong>当前版本的分发为模拟状态。点击右上角「接入飞书」按钮可配置真实发送。</div>
     </div>
   </div>
 
@@ -1058,16 +1430,34 @@ const DEMOS = [
 let currentDemoIdx = 0;
 let actionStates = {}; // id -> { status, selectedTarget }
 
-// ══ 初始化 ══
-loadDemo(0);
+// ══ API Key 管理 ══
+const SYSTEM_KEY = 'sk-d8a9be6821fa4c52bf02aecea3626f00';
 
-function loadDemo(idx) {
-  currentDemoIdx = idx;
-  document.getElementById('transcript').value = DEMOS[idx].transcript;
-  document.querySelectorAll('.demo-chip').forEach((c, i) => {
-    c.classList.toggle('active', i === idx);
-  });
+function toggleKeyMode(mode) {
+  const input = document.getElementById('api-key');
+  const hint = document.getElementById('key-hint');
+  if (mode === 'custom') {
+    input.style.display = 'block';
+    hint.textContent = '支持任意兼容 OpenAI 格式的 API Key，Key 仅在浏览器本地使用';
+  } else {
+    input.style.display = 'none';
+    hint.textContent = '系统 Key 由作者提供，直接可用';
+  }
 }
+
+function getApiKey() {
+  const mode = document.querySelector('input[name="key-mode"]:checked').value;
+  if (mode === 'system') return SYSTEM_KEY;
+  return document.getElementById('api-key').value.trim();
+}
+
+// ══ 当前行动项数据（示例模式 or AI 解析模式）══
+function getActiveActions() {
+  return currentActions.length > 0 ? currentActions : getActiveActions();
+}
+
+// ══ 初始化 ══
+// （无示例，用户直接粘贴内容）
 
 function goScreen(n) {
   [1,2,3].forEach(i => {
@@ -1078,23 +1468,138 @@ function goScreen(n) {
 }
 
 // ══ Screen 1 → Screen 2 ══
-function startExtract() {
-  const overlay = document.getElementById('extracting');
-  overlay.classList.add('show');
-  document.querySelector('.s1-actions').style.opacity = '0.4';
-  document.querySelector('.s1-actions').style.pointerEvents = 'none';
+async function startExtract() {
+  const transcript = document.getElementById('transcript').value.trim();
+  const apiKey = getApiKey();
+  const errorBlock = document.getElementById('error-block');
+  errorBlock.classList.remove('show');
 
-  setTimeout(() => {
+  if (!transcript) {
+    errorBlock.textContent = '请先粘贴会议转录内容或选择示例。';
+    errorBlock.classList.add('show');
+    return;
+  }
+
+  if (!apiKey) {
+    errorBlock.textContent = '请填写 DeepSeek API Key（格式：sk-...）';
+    errorBlock.classList.add('show');
+    return;
+  }
+
+  // 进入加载态
+  const overlay = document.getElementById('extracting');
+  const actionsEl = document.querySelector('.s1-actions');
+  overlay.classList.add('show');
+  actionsEl.style.opacity = '0.4';
+  actionsEl.style.pointerEvents = 'none';
+
+  try {
+    const prompt = `你是一个专业的会议助手。请从以下会议转录中提取所有行动项（action items）。
+
+要求：
+1. 每个行动项必须有明确的负责人和任务描述
+2. 返回 JSON 数组，格式如下：
+[
+  {
+    "text": "行动项的完整描述，包含负责人和截止时间",
+    "owner": "负责人姓名",
+    "deadline": "截止时间描述，如'本周五'、'两周内'、'下周一'等，没有则填'待定'"
+  }
+]
+3. 只返回 JSON 数组，不要任何额外文字
+
+会议转录内容：
+${transcript}`;
+
+    const res = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 2000
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `请求失败：HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const rawText = data.choices?.[0]?.message?.content || '';
+
+    // 提取 JSON
+    const jsonMatch = rawText.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error('AI 返回格式异常，未能解析行动项');
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('未找到行动项，请确认会议内容包含明确的任务分配');
+
+    // 把解析结果转成内部格式
+    currentActions = parsed.map((item, i) => ({
+      id: i + 1,
+      text: item.text || '（未命名行动项）',
+      owner: item.owner || '待定',
+      deadline: item.deadline || '待定',
+      defaultTarget: 'msg',
+      targets: buildTargets(item)
+    }));
+
     overlay.classList.remove('show');
-    document.querySelector('.s1-actions').style.opacity = '';
-    document.querySelector('.s1-actions').style.pointerEvents = '';
-    buildActionList();
+    actionsEl.style.opacity = '';
+    actionsEl.style.pointerEvents = '';
+    buildActionListFromData(currentActions);
     goScreen(2);
-  }, 1600);
+
+  } catch (e) {
+    overlay.classList.remove('show');
+    actionsEl.style.opacity = '';
+    actionsEl.style.pointerEvents = '';
+    errorBlock.textContent = '提取失败：' + e.message;
+    errorBlock.classList.add('show');
+  }
+}
+
+function buildTargets(item) {
+  const owner = item.owner || '待定';
+  const deadline = item.deadline || '待定';
+  const taskShort = (item.text || '').slice(0, 20);
+  return {
+    msg: {
+      icon: '💬', label: '飞书消息',
+      lines: [['接收人', `@${owner}`], ['内容', item.text], ['截止', deadline], ['发送', '立即']]
+    },
+    cal: {
+      icon: '📅', label: '日历事件',
+      lines: [['事件', taskShort], ['负责人', owner], ['截止', deadline], ['提醒', '截止前一天']]
+    },
+    doc: {
+      icon: '📄', label: '文档草稿',
+      lines: [['文档标题', taskShort], ['负责人', owner], ['截止', deadline], ['状态', '待开始']]
+    }
+  };
+}
+
+let currentActions = [];
+
+function buildActionListFromData(actions) {
+  actionStates = {};
+  actions.forEach(a => {
+    actionStates[a.id] = { status: 'pending', selectedTarget: a.defaultTarget };
+  });
+  document.getElementById('s2-subtitle').textContent = `AI 提取了 ${actions.length} 条行动项，逐条确认分发目标`;
+  document.getElementById('action-list').innerHTML = actions.map(a => renderCard(a)).join('');
+  updateDispatchCount();
 }
 
 function buildActionList() {
-  const actions = DEMOS[currentDemoIdx].actions;
+  // 示例模式：走预设数据
+  const actions = getActiveActions();
   actionStates = {};
   actions.forEach(a => {
     actionStates[a.id] = { status: 'pending', selectedTarget: a.defaultTarget };
@@ -1148,14 +1653,36 @@ function renderCard(a) {
     </div>
 
     <div class="edit-modal" id="edit-${a.id}">
-      <textarea id="edittext-${a.id}" rows="2">${a.text}</textarea>
+      <div class="edit-field-group">
+        <div class="edit-field">
+          <label class="edit-label">任务描述</label>
+          <textarea id="edittext-${a.id}" rows="2">${a.text}</textarea>
+        </div>
+        <div class="edit-row">
+          <div class="edit-field">
+            <label class="edit-label">负责人</label>
+            <input type="text" id="editowner-${a.id}" value="${a.owner || ''}" placeholder="姓名" />
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">截止时间</label>
+            <input type="text" id="editdeadline-${a.id}" value="${a.deadline || ''}" placeholder="如：本周五" />
+          </div>
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">飞书消息内容</label>
+          <input type="text" id="editmsg-${a.id}" value="${(a.targets.msg.lines.find(l=>l[0]==='内容')||['',''])[1]}" placeholder="发送给负责人的消息" />
+        </div>
+      </div>
       <div class="edit-modal-actions">
         <button class="btn-sm confirm" onclick="saveEdit(${a.id})">保存</button>
         <button class="btn-sm" onclick="cancelEdit(${a.id})">取消</button>
       </div>
     </div>
 
-    <div class="confirmed-overlay">✓ 已确认 · 将分发至 ${sel.icon} ${sel.label}</div>
+    <div class="confirmed-overlay">
+      <span class="confirmed-text">✓ 已确认 · 将分发至 ${sel.icon} ${sel.label}</span>
+      <button class="btn-unconfirm" onclick="unconfirmCard(${a.id})">撤销确认</button>
+    </div>
   </div>`;
 }
 
@@ -1192,9 +1719,21 @@ function confirmCard(id) {
   card.querySelector('.status-badge').textContent = '✓ 已确认';
   card.querySelector('.dispatch-selector').style.display = 'none';
   card.querySelector('.action-btns').style.display = 'none';
-  const sel = DEMOS[currentDemoIdx].actions.find(a => a.id === id).targets[actionStates[id].selectedTarget];
+  const sel = getActiveActions().find(a => a.id === id).targets[actionStates[id].selectedTarget];
   card.querySelector('.confirmed-overlay').style.display = 'block';
   card.querySelector('.confirmed-overlay').textContent = `✓ 已确认 · 将分发至 ${sel.icon} ${sel.label}`;
+  updateDispatchCount();
+}
+
+function unconfirmCard(id) {
+  actionStates[id].status = 'pending';
+  const card = document.getElementById('card-' + id);
+  card.className = 'action-card status-pending';
+  card.querySelector('.status-badge').className = 'status-badge pending';
+  card.querySelector('.status-badge').textContent = '待确认';
+  card.querySelector('.dispatch-selector').style.display = '';
+  card.querySelector('.action-btns').style.display = '';
+  card.querySelector('.confirmed-overlay').style.display = 'none';
   updateDispatchCount();
 }
 
@@ -1204,11 +1743,44 @@ function editCard(id) {
 }
 
 function saveEdit(id) {
+  const a = getActiveActions().find(x => x.id === id);
+  if (!a) return;
+
   const newText = document.getElementById('edittext-' + id).value.trim();
-  if (newText) {
-    document.getElementById('text-' + id).textContent = newText;
-    DEMOS[currentDemoIdx].actions.find(a => a.id === id).text = newText;
+  const newOwner = document.getElementById('editowner-' + id).value.trim();
+  const newDeadline = document.getElementById('editdeadline-' + id).value.trim();
+  const newMsg = document.getElementById('editmsg-' + id).value.trim();
+
+  if (newText) { a.text = newText; document.getElementById('text-' + id).textContent = newText; }
+  if (newOwner) { a.owner = newOwner; }
+  if (newDeadline) { a.deadline = newDeadline; }
+
+  // 同步回 targets
+  const setLine = (lines, key, val) => {
+    const entry = lines.find(l => l[0] === key);
+    if (entry) entry[1] = val; else lines.push([key, val]);
+  };
+
+  if (newOwner || newDeadline) {
+    ['msg','cal','doc'].forEach(tk => {
+      if (newOwner) {
+        setLine(a.targets[tk].lines, tk === 'msg' ? '接收人' : '负责人', tk === 'msg' ? `@${newOwner}` : newOwner);
+      }
+      if (newDeadline) {
+        setLine(a.targets[tk].lines, tk === 'cal' ? '时间' : '截止', newDeadline);
+      }
+    });
   }
+  if (newMsg) setLine(a.targets.msg.lines, '内容', newMsg);
+
+  // 刷新当前预览
+  const state = actionStates[id];
+  const sel = a.targets[state.selectedTarget];
+  const previewHtml = sel.lines.map(([k, v]) =>
+    `<div class="pv-line"><span class="pv-key">${k}</span><span class="pv-val">${v}</span></div>`
+  ).join('');
+  document.getElementById('preview-' + id).innerHTML = previewHtml;
+
   document.getElementById('edit-' + id).classList.remove('show');
 }
 
@@ -1229,7 +1801,7 @@ function deleteCard(id) {
 }
 
 function confirmAll() {
-  const actions = DEMOS[currentDemoIdx].actions;
+  const actions = getActiveActions();
   actions.forEach(a => {
     if (actionStates[a.id].status === 'pending') {
       confirmCard(a.id);
@@ -1238,7 +1810,7 @@ function confirmAll() {
 }
 
 function updateDispatchCount() {
-  const actions = DEMOS[currentDemoIdx].actions;
+  const actions = getActiveActions();
   const confirmed = actions.filter(a => actionStates[a.id] && actionStates[a.id].status === 'confirmed').length;
   const total = actions.filter(a => actionStates[a.id] && actionStates[a.id].status !== 'deleted').length;
   document.getElementById('dispatch-count').innerHTML = `已确认 <strong>${confirmed}</strong> / ${total} 条`;
@@ -1248,7 +1820,7 @@ function updateDispatchCount() {
 
 // ══ Screen 2 → Screen 3 ══
 function doDispatch() {
-  const actions = DEMOS[currentDemoIdx].actions;
+  const actions = getActiveActions();
   const confirmed = actions.filter(a => actionStates[a.id] && actionStates[a.id].status === 'confirmed');
 
   document.getElementById('s3-subtitle').textContent = `${confirmed.length} 条行动项已成功分发`;
@@ -1276,8 +1848,36 @@ function doDispatch() {
 }
 
 function resetAll() {
-  loadDemo(0);
+  currentActions = [];
+  document.getElementById('transcript').value = '';
   goScreen(1);
+}
+
+// ══ 飞书指引浮层 ══
+function openGuide() {
+  document.getElementById('guide-overlay').classList.add('open');
+}
+
+function closeGuide() {
+  document.getElementById('guide-overlay').classList.remove('open');
+}
+
+function closeGuideIfBg(e) {
+  if (e.target === document.getElementById('guide-overlay')) closeGuide();
+}
+
+let feishuWebhook = '';
+
+function saveWebhook() {
+  const val = document.getElementById('feishu-webhook').value.trim();
+  if (!val.startsWith('https://open.feishu.cn/')) {
+    document.getElementById('webhook-saved').textContent = '⚠ URL 格式不对，请重新复制';
+    document.getElementById('webhook-saved').style.color = 'var(--red)';
+    return;
+  }
+  feishuWebhook = val;
+  document.getElementById('webhook-saved').textContent = '✓ 已保存，下次分发飞书消息将真实发送';
+  document.getElementById('webhook-saved').style.color = 'var(--green)';
 }
 </script>
 </body>
