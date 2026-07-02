@@ -87,6 +87,39 @@
     .disclaimer-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
     .disclaimer-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 
+    /* Technical Architecture */
+    .tech-section { display: flex; flex-direction: column; gap: 0; }
+    .tech-block { padding: 20px 0; border-top: 1px solid var(--border); }
+    .tech-block:first-child { border-top: none; }
+    .tech-block-header { display: flex; gap: 16px; align-items: baseline; margin-bottom: 10px; }
+    .tech-block-num { font-size: 11px; font-weight: 700; color: #C8956C; letter-spacing: .08em; width: 24px; flex-shrink: 0; }
+    .tech-block-title { font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: -.01em; }
+    .tech-block-body { font-size: 13px; color: var(--text-secondary); line-height: 1.75; max-width: 600px; padding-left: 40px; }
+    .tech-block-body p + p { margin-top: 10px; }
+    .tech-inline-code {
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 12px;
+      background: #f3f3f3;
+      border: 1px solid #e4e4e4;
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: #333;
+    }
+    .tech-formula {
+      display: inline-block;
+      background: #f7f6f3;
+      border: 1px solid #e8e6e0;
+      border-radius: 5px;
+      padding: 6px 12px;
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+      margin: 6px 0;
+    }
+    .tech-bullets { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .tech-bullet { display: flex; gap: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .tech-bullet::before { content: '—'; color: #C8956C; flex-shrink: 0; }
+
     footer { padding: 32px 0 48px; font-size: 12px; color: var(--text-muted); }
   </style>
 </head>
@@ -104,7 +137,8 @@
       <div class="project-meta-row">
         <span class="tag">AI 质检</span>
         <span class="tag">0→1</span>
-        <span class="tag">LLM</span>
+        <span class="tag">LLM/RAG</span>
+        <span class="tag">Agent</span>
         <span class="project-date">2024 · 核桃编程</span>
       </div>
       <h1 class="project-title">AI 质检系统</h1>
@@ -195,6 +229,74 @@
             <div class="step-desc">AI 质检上线后，业务侧会主动调整话术来规避判责，导致初期检出量高、后续准确度自然下降。为此设计了反哺机制：AI 判「通过」但人工判「不通过」的结果，自动回流到模型训练数据，对抗这种「准确度衰减」。该机制目前已完成方案设计，正在推进开发落地。</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <p class="section-label">Technical Architecture</p>
+      <div class="tech-section">
+
+        <div class="tech-block">
+          <div class="tech-block-header">
+            <span class="tech-block-num">01</span>
+            <span class="tech-block-title">P1/P2 分级判断：Agent 的资源分配逻辑</span>
+          </div>
+          <div class="tech-block-body">
+            <p>质检不只靠一个模型判断一次就完事。我设计了两级判断链路：</p>
+            <div class="tech-bullets">
+              <div class="tech-bullet"><strong>P1（初筛）</strong>：低成本快速扫描全文，输出候选风险标签</div>
+              <div class="tech-bullet"><strong>P2（精判）</strong>：仅对 P1 标记的候选标签投入更多推理资源，输出违规语句与理由</div>
+            </div>
+            <p style="margin-top:10px;">为什么不做一步到位？不是所有对话都需要同等深度的审查。P1 把大部分正常对话快速筛掉，P2 只处理少数可疑对话。分级投入资源本身就是信任设计的延伸——高置信度直接放行，低置信度再精判。</p>
+          </div>
+        </div>
+
+        <div class="tech-block">
+          <div class="tech-block-header">
+            <span class="tech-block-num">02</span>
+            <span class="tech-block-title">Embedding + LCS 混合检索：两个信号互相兜底</span>
+          </div>
+          <div class="tech-block-body">
+            <p>P2 输出违规语句后，下一步是在原始对话中定位「这句话在哪里」。单用语义检索有盲区——「升学有帮助」和「认定科技特长生」语义接近，但后者才是违规证据。单用字面检索也有盲区——表述差异会导致漏找。混合检索链路：</p>
+            <div class="tech-bullets">
+              <div class="tech-bullet"><strong>语义海选</strong>：bge-m3-ht 编码为 1024 维向量 → Milvus 内积召回 Top100</div>
+              <div class="tech-bullet"><strong>字面重排</strong>：最长公共子串（LCS）对 Top100 重排，有连续字面匹配的 Chunk 提上来</div>
+              <div class="tech-bullet"><strong>混合公式</strong>：<span class="tech-formula">rerankScore = semanticScore + 3.0 × (lcsLen / max(queryLen, chunkLen))</span></div>
+            </div>
+            <p style="margin-top:10px;">Chunk 设计也服务于下游需求——保留消息边界（不硬切跨消息），每条消息存坐标 Metadata（msgId、offsetStart、offsetEnd），为消息级定位建立基础。</p>
+          </div>
+        </div>
+
+        <div class="tech-block">
+          <div class="tech-block-header">
+            <span class="tech-block-num">03</span>
+            <span class="tech-block-title">异步并行工作流 + 汇合条件</span>
+          </div>
+          <div class="tech-block-body">
+            <p>整个质检链路不是串行等待，而是两条链路并行推进：</p>
+            <div class="tech-bullets">
+              <div class="tech-bullet"><strong>链路 A（模型判断）</strong>：拼全文 → P1 → P2 → 输出违规语句</div>
+              <div class="tech-bullet"><strong>链路 B（向量化准备）</strong>：排序消息 → 切 Chunk → Embedding → 写入 Milvus</div>
+            </div>
+            <p style="margin-top:10px;">两条链路各自推进，<strong>汇合条件</strong>：P2 已给出 Query 且向量化已完成 → 才触发召回。缺一不可。容错设计：MQ at-least-once + CAS 幂等保护 + 延迟消息检查向量化是否就绪，而不是直接报错。</p>
+          </div>
+        </div>
+
+        <div class="tech-block">
+          <div class="tech-block-header">
+            <span class="tech-block-num">04</span>
+            <span class="tech-block-title">数据策略与评测体系</span>
+          </div>
+          <div class="tech-block-body">
+            <div class="tech-bullets">
+              <div class="tech-bullet"><strong>标注</strong>：4 级违规分级（严重/一般/疑似/正常），覆盖 emoji、转账截图、反讽语气等 12 类边界场景</div>
+              <div class="tech-bullet"><strong>Gold Dataset</strong>：基于 msg_id + 正文 span 建立，而非 chunk_id——Chunk 切法会迭代，但消息不变，评测要落在稳定的锚点上</div>
+              <div class="tech-bullet"><strong>4 维评测</strong>：Dense Recall@K（海选层）→ Top1 Evidence Hit（排序层）→ Message Precision/Recall（定位层）→ Span IoU/F1（字符层），每个指标衡量不同的能力层</div>
+              <div class="tech-bullet"><strong>5 级故障定位</strong>：召回 → 排序 → 定位 → 映射 → 范围，逐层排查先确定问题在哪一层，再针对性修复</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
