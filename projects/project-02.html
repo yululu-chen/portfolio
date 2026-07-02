@@ -126,7 +126,7 @@
 
     <div class="project-header">
       <div class="project-meta-row">
-        <span class="tag">AI 分析</span>
+        <span class="tag">AI 交互设计</span>
         <span class="tag">ASR</span>
         <span class="tag">0→1</span>
         <span class="project-date">2024 · 核桃编程</span>
@@ -228,6 +228,7 @@
       <div class="content-text">
         <p>这个项目最有价值的发现是：AI 的能力形态不是模型团队定义的，是产品团队和模型团队一起定义的。最初只做"摘要"，是因为模型团队认为这是最自然的输出方式。但从用户场景倒推，老师需要的不是"一段文字"，而是"一个可以操作的入口"——从摘要到切片，不是功能迭代，是交互形态的重新定义。</p>
         <p>这让我意识到，AI 产品经理不只是"把模型能力包装成功能"，而是要参与定义 AI 能力应该以什么形态出现在用户面前。</p>
+        <p style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted);line-height:1.8;"><strong style="color:var(--text-secondary);font-size:12px;letter-spacing:.06em;text-transform:uppercase;">技术视角补充</strong><br>从架构层面看，这个项目的核心工作流是「录音 → ASR 转写 → LLM 切片分析 → 风险标签 → 人工标注 → 数据回流」，5 个状态节点各有异常兜底分支（ASR 转写失败、模型置信度低、切片数量异常等）。切片不是按时间等分，而是按话题语义划分——每个切片有独立的主题标签和风险评级，支持直接点击跳转。第二期扩展到 1VN（多人通话）场景时，没有复用 1V1 的 Prompt 模板——单人场景的提示词擅长概括话题，但在多人场景中「判断哪个环节重要」的能力有欠缺，需要独立调优。<strong style="color:var(--text-secondary);">场景扩展和模型调优必须同步推进，AI 能力的边界决定了产品形态的边界。</strong></p>
       </div>
     </div>
 
