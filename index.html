@@ -4,40 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>陈雨露 — AI 产品经理</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
-      --bg: #f7f7f5;
+      --bg: #ffffff;
       --surface: #ffffff;
-      --border: #e8e8e4;
-      --border-hover: #d0d0ca;
+      --border: rgba(0,0,0,0.07);
+      --border-strong: rgba(0,0,0,0.12);
       --text-primary: #0f0f0e;
       --text-secondary: #6b6b63;
       --text-muted: #a8a89e;
-      --tag-bg: #eeeee8;
-      --tag-text: #5c5c54;
-      --accent: #0f0f0e;
-      --blue: #1a6dff;
+      --tag-bg: rgba(200,149,108,0.08);
+      --tag-text: #C8956C;
+      --accent: #C8956C;
+      --accent-hover: #b07d57;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { font-size: 16px; }
 
     body {
-      background: var(--bg);
+      background: linear-gradient(180deg, #FFFFFF 0%, #F7F7F8 100%);
+      background-attachment: fixed;
       color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── 整体容器 ── */
-    .page {
-      min-height: 100vh;
+    /* ── Sticky Nav ── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 32px;
+      height: 52px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
     }
+
+    .nav-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .nav-cta {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 5px 12px;
+      border: 1px solid rgba(200,149,108,0.3);
+      border-radius: 20px;
+      transition: all 0.18s;
+    }
+
+    .nav-cta:hover {
+      background: var(--tag-bg);
+      border-color: var(--accent);
+    }
+
+    /* ── 整体容器 ── */
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
 
     .container {
       max-width: 900px;
@@ -47,114 +94,92 @@
     }
 
     /* ══════════════════════════
-       HEADER
+       HEADER / HERO
     ══════════════════════════ */
-    header {
-      padding: 72px 0 64px;
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 32px;
-    }
-
-    .hero-left {}
+    header { padding: 80px 0 72px; }
 
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-size: 11px;
-      letter-spacing: 0.12em;
+      font-weight: 500;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 14px;
+      color: var(--accent);
+      margin-bottom: 20px;
     }
 
     .hero-eyebrow::before {
       content: '';
       display: block;
-      width: 16px;
-      height: 1px;
-      background: var(--text-muted);
+      width: 20px;
+      height: 1.5px;
+      background: var(--accent);
+      border-radius: 2px;
     }
 
     .hero-name {
-      font-size: clamp(36px, 5vw, 52px);
-      font-weight: 750;
+      font-size: clamp(42px, 6vw, 64px);
+      font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.05;
-      margin-bottom: 20px;
+      margin-bottom: 36px;
       color: var(--text-primary);
     }
 
     .hero-bio {
-      font-size: 15px;
+      font-size: 17px;
+      font-weight: 400;
       color: var(--text-secondary);
-      max-width: 420px;
-      line-height: 1.75;
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 36px;
     }
 
-    .hero-right {
+    .hero-meta {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-      flex-shrink: 0;
-      padding-bottom: 4px;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
     .hero-email {
       font-size: 13px;
-      color: var(--text-secondary);
-      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
     }
 
     .hero-scroll {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .hero-scroll:hover { color: var(--text-primary); }
-
-    .hero-scroll svg {
-      transition: transform 0.2s;
-    }
-
-    .hero-scroll:hover svg { transform: translateY(2px); }
-
-    /* ══════════════════════════
-       DIVIDER
-    ══════════════════════════ */
-    .divider {
-      height: 1px;
-      background: var(--border);
-    }
+    .hero-scroll:hover { color: var(--accent); }
+    .hero-scroll svg { transition: transform 0.2s; }
+    .hero-scroll:hover svg { transform: translateY(3px); }
 
     /* ══════════════════════════
        MAIN GRID
     ══════════════════════════ */
+    .divider { height: 1px; background: var(--border); }
+
     .main-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
-      padding: 56px 0;
+      padding: 60px 0;
     }
 
-    .col {
-      padding-right: 48px;
-    }
-
+    .col { padding-right: 52px; }
     .col + .col {
       padding-right: 0;
-      padding-left: 48px;
+      padding-left: 52px;
       border-left: 1px solid var(--border);
     }
 
@@ -163,49 +188,64 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
 
     .col-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-primary);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
     .col-count {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
       background: var(--tag-bg);
       padding: 1px 7px;
       border-radius: 20px;
     }
 
     /* ── 项目卡片 ── */
-    .project-list {
-      display: flex;
-      flex-direction: column;
-    }
+    .project-list { display: flex; flex-direction: column; }
 
     .project-card {
       display: block;
-      padding: 16px 0;
+      padding: 20px 0;
       border-top: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
-      transition: all 0.18s ease;
       position: relative;
+      /* 滚动渐入初始状态 */
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .project-card.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .project-card:first-child { border-top: none; }
 
-    .project-card:hover .project-title {
-      color: var(--blue);
-    }
-
+    .project-card:hover .project-title { color: var(--accent); }
     .project-card:hover .project-arrow {
       opacity: 1;
       transform: translate(2px, -2px);
+      color: var(--accent);
+    }
+
+    .project-number {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+      font-variant-numeric: tabular-nums;
     }
 
     .project-card-top {
@@ -213,7 +253,7 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
     }
 
     .project-title {
@@ -222,13 +262,14 @@
       line-height: 1.4;
       transition: color 0.18s;
       flex: 1;
+      letter-spacing: -0.01em;
     }
 
     .project-arrow {
       font-size: 12px;
       color: var(--text-muted);
       opacity: 0;
-      transition: opacity 0.18s, transform 0.18s;
+      transition: opacity 0.18s, transform 0.18s, color 0.18s;
       flex-shrink: 0;
       margin-top: 1px;
     }
@@ -236,8 +277,8 @@
     .project-desc {
       font-size: 12px;
       color: var(--text-secondary);
-      line-height: 1.55;
-      margin-bottom: 10px;
+      line-height: 1.65;
+      margin-bottom: 12px;
     }
 
     .project-footer {
@@ -247,19 +288,15 @@
       gap: 8px;
     }
 
-    .tag-list {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
+    .tag-list { display: flex; gap: 4px; flex-wrap: wrap; }
 
     .tag {
       font-size: 10px;
+      font-weight: 500;
       background: var(--tag-bg);
-      color: var(--tag-text);
+      color: var(--accent);
       padding: 2px 8px;
       border-radius: 20px;
-      font-weight: 500;
     }
 
     .project-date {
@@ -267,38 +304,6 @@
       color: var(--text-muted);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
-    }
-
-    /* 占位卡片 */
-    .project-card.placeholder {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    .placeholder .project-title {
-      color: var(--text-muted);
-    }
-
-    /* 占位虚线 */
-    .coming-soon-block {
-      border: 1.5px dashed var(--border-hover);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .coming-soon-block .cs-icon {
-      font-size: 20px;
-      margin-bottom: 6px;
-      opacity: 0.4;
-    }
-
-    .coming-soon-block .cs-text {
-      font-size: 12px;
-      line-height: 1.6;
     }
 
     /* ══════════════════════════
@@ -315,28 +320,19 @@
     }
 
     .contact-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-    }
-
-    .contact-items {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-
-    .contact-item {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .contact-item-label {
       font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--text-muted);
+      margin-bottom: 14px;
     }
+
+    .contact-items { display: flex; gap: 32px; flex-wrap: wrap; }
+
+    .contact-item { display: flex; flex-direction: column; gap: 3px; }
+
+    .contact-item-label { font-size: 11px; color: var(--text-muted); }
 
     .contact-item-value {
       font-size: 14px;
@@ -361,11 +357,14 @@
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
-      .header-inner { flex-direction: column; align-items: flex-start; }
-      .hero-right { align-items: flex-start; }
+      .sticky-nav { padding: 0 20px; }
+      .nav-right { gap: 12px; }
+      .nav-cta { display: none; }
+      .container { padding: 0 20px; }
+      header { padding: 48px 0 52px; }
       .main-grid { grid-template-columns: 1fr; }
       .col { padding-right: 0; }
-      .col + .col { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 48px; margin-top: 0; }
+      .col + .col { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 48px; }
       .contact-section { flex-direction: column; align-items: flex-start; }
     }
   </style>
@@ -373,22 +372,27 @@
 <body>
 <div class="page">
 
+  <!-- ══ STICKY NAV ══ -->
+  <nav class="sticky-nav">
+    <span class="nav-name">陈雨露</span>
+    <div class="nav-right">
+      <span class="nav-email">yululu.c@gmail.com</span>
+      <a class="nav-cta" href="#contact">联系我</a>
+    </div>
+  </nav>
+
   <!-- ══ HEADER ══ -->
   <header>
     <div class="container">
-      <div class="header-inner">
-        <div class="hero-left">
-          <div class="hero-eyebrow">AI Product Manager</div>
-          <h1 class="hero-name">陈雨露</h1>
-          <p class="hero-bio">我相信 AI 不是工具的升级，而是人与信息关系的重塑。这里记录了我做过的产品——不只是做了什么，更是在做的时候，如何思考 AI 应该以什么姿态介入人的工作。</p>
-        </div>
-        <div class="hero-right">
-          <span class="hero-email">yululu.c@gmail.com</span>
-          <a class="hero-scroll" href="#projects">
-            查看项目
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </a>
-        </div>
+      <div class="hero-eyebrow">AI Product Manager</div>
+      <h1 class="hero-name">陈雨露</h1>
+      <p class="hero-bio">我相信 AI 不是工具的升级，而是人与信息关系的重塑。这里记录了我做过的产品——不只是做了什么，更是在做的时候，如何思考 AI 应该以什么姿态介入人的工作。</p>
+      <div class="hero-meta">
+        <span class="hero-email">yululu.c@gmail.com</span>
+        <a class="hero-scroll" href="#projects">
+          查看项目
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
       </div>
     </div>
   </header>
@@ -408,6 +412,7 @@
         <div class="project-list">
 
           <a class="project-card" href="projects/project-01.html">
+            <span class="project-number">01</span>
             <div class="project-card-top">
               <div class="project-title">AI 质检系统</div>
               <span class="project-arrow">↗</span>
@@ -424,6 +429,7 @@
           </a>
 
           <a class="project-card" href="projects/project-02.html">
+            <span class="project-number">02</span>
             <div class="project-card-top">
               <div class="project-title">电访质量分析</div>
               <span class="project-arrow">↗</span>
@@ -440,6 +446,7 @@
           </a>
 
           <a class="project-card" href="projects/project-03.html">
+            <span class="project-number">03</span>
             <div class="project-card-top">
               <div class="project-title">现场管理数据平台</div>
               <span class="project-arrow">↗</span>
@@ -455,6 +462,7 @@
           </a>
 
           <a class="project-card" href="projects/project-04.html">
+            <span class="project-number">04</span>
             <div class="project-card-top">
               <div class="project-title">外呼系统重构</div>
               <span class="project-arrow">↗</span>
@@ -479,7 +487,24 @@
         </div>
         <div class="project-list">
 
+          <a class="project-card" href="projects/sentinel.html" target="_blank">
+            <span class="project-number">01</span>
+            <div class="project-card-top">
+              <div class="project-title">守望 Sentinel</div>
+              <span class="project-arrow">↗</span>
+            </div>
+            <div class="project-desc">当项目关键人离开，你不需要自己去盯——Agent 在组织变动时主动分析影响、评估风险、建议下一步，但暂停还是继续，决定权在你手上。</div>
+            <div class="project-footer">
+              <div class="tag-list">
+                <span class="tag">Agent 信任设计</span>
+                <span class="tag">AI 主动行动</span>
+              </div>
+              <span class="project-date">2025</span>
+            </div>
+          </a>
+
           <a class="project-card" href="assets/dispatch.html" target="_blank">
+            <span class="project-number">02</span>
             <div class="project-card-top">
               <div class="project-title">Dispatch · 会议行动项分发器</div>
               <span class="project-arrow">↗</span>
@@ -496,6 +521,7 @@
           </a>
 
           <a class="project-card" href="https://app-clq1fbv4libl.appmiaoda.com" target="_blank">
+            <span class="project-number">03</span>
             <div class="project-card-top">
               <div class="project-title">成语接龙小游戏</div>
               <span class="project-arrow">↗</span>
@@ -512,6 +538,7 @@
           </a>
 
           <a class="project-card" href="https://yululu-chen.github.io/portfolio/index.html" target="_blank">
+            <span class="project-number">04</span>
             <div class="project-card-top">
               <div class="project-title">本作品集网站</div>
               <span class="project-arrow">↗</span>
@@ -561,5 +588,24 @@
   </footer>
 
 </div>
+
+<script>
+  // 滚动渐入
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // 错开出现，营造层次感
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    observer.observe(card);
+  });
+</script>
 </body>
 </html>
