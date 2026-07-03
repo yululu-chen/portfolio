@@ -20,10 +20,8 @@
       --accent: #C8956C;
       --accent-hover: #b07d57;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; }
-
     body {
       background: linear-gradient(180deg, #FFFFFF 0%, #F7F7F8 100%);
       background-attachment: fixed;
@@ -32,7 +30,6 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-
     /* ── Sticky Nav ── */
     .sticky-nav {
       position: sticky;
@@ -48,25 +45,21 @@
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-
     .nav-name {
       font-size: 14px;
       font-weight: 600;
       letter-spacing: -0.02em;
       color: var(--text-primary);
     }
-
     .nav-right {
       display: flex;
       align-items: center;
       gap: 20px;
     }
-
     .nav-email {
       font-size: 13px;
       color: var(--text-secondary);
     }
-
     .nav-cta {
       font-size: 12px;
       font-weight: 500;
@@ -77,27 +70,22 @@
       border-radius: 20px;
       transition: all 0.18s;
     }
-
     .nav-cta:hover {
       background: var(--tag-bg);
       border-color: var(--accent);
     }
-
     /* ── 整体容器 ── */
     .page { min-height: 100vh; display: flex; flex-direction: column; }
-
     .container {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 32px;
       width: 100%;
     }
-
     /* ══════════════════════════
        HEADER / HERO
     ══════════════════════════ */
     header { padding: 80px 0 72px; }
-
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
@@ -109,7 +97,6 @@
       color: var(--accent);
       margin-bottom: 20px;
     }
-
     .hero-eyebrow::before {
       content: '';
       display: block;
@@ -118,7 +105,6 @@
       background: var(--accent);
       border-radius: 2px;
     }
-
     .hero-name {
       font-size: clamp(42px, 6vw, 64px);
       font-weight: 700;
@@ -127,7 +113,6 @@
       margin-bottom: 36px;
       color: var(--text-primary);
     }
-
     .hero-bio {
       font-size: 17px;
       font-weight: 400;
@@ -136,19 +121,16 @@
       line-height: 1.7;
       margin-bottom: 36px;
     }
-
     .hero-meta {
       display: flex;
       align-items: center;
       gap: 24px;
       flex-wrap: wrap;
     }
-
     .hero-email {
       font-size: 13px;
       color: var(--text-muted);
     }
-
     .hero-scroll {
       display: inline-flex;
       align-items: center;
@@ -159,30 +141,28 @@
       text-decoration: none;
       transition: color 0.2s;
     }
-
     .hero-scroll:hover { color: var(--accent); }
     .hero-scroll svg { transition: transform 0.2s; }
     .hero-scroll:hover svg { transform: translateY(3px); }
-
     /* ══════════════════════════
        MAIN GRID
     ══════════════════════════ */
     .divider { height: 1px; background: var(--border); }
-
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 0.55fr;
       gap: 0;
       padding: 60px 0;
     }
-
     .col { padding-right: 52px; }
     .col + .col {
-      padding-right: 0;
+      padding-right: 52px;
       padding-left: 52px;
       border-left: 1px solid var(--border);
     }
-
+    .col:last-child {
+      padding-right: 0;
+    }
     /* ── 区块标题 ── */
     .col-header {
       display: flex;
@@ -190,7 +170,6 @@
       gap: 10px;
       margin-bottom: 32px;
     }
-
     .col-title {
       font-size: 11px;
       font-weight: 600;
@@ -198,7 +177,6 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
-
     .col-count {
       font-size: 10px;
       font-weight: 600;
@@ -207,10 +185,8 @@
       padding: 1px 7px;
       border-radius: 20px;
     }
-
     /* ── 项目卡片 ── */
     .project-list { display: flex; flex-direction: column; }
-
     .project-card {
       display: block;
       padding: 20px 0;
@@ -218,26 +194,21 @@
       text-decoration: none;
       color: inherit;
       position: relative;
-      /* 滚动渐入初始状态 */
       opacity: 0;
       transform: translateY(18px);
       transition: opacity 0.5s ease, transform 0.5s ease;
     }
-
     .project-card.visible {
       opacity: 1;
       transform: translateY(0);
     }
-
     .project-card:first-child { border-top: none; }
-
     .project-card:hover .project-title { color: var(--accent); }
     .project-card:hover .project-arrow {
       opacity: 1;
       transform: translate(2px, -2px);
       color: var(--accent);
     }
-
     .project-number {
       display: block;
       font-size: 11px;
@@ -247,7 +218,6 @@
       margin-bottom: 5px;
       font-variant-numeric: tabular-nums;
     }
-
     .project-card-top {
       display: flex;
       align-items: flex-start;
@@ -255,7 +225,6 @@
       gap: 8px;
       margin-bottom: 7px;
     }
-
     .project-title {
       font-size: 14px;
       font-weight: 600;
@@ -264,7 +233,6 @@
       flex: 1;
       letter-spacing: -0.01em;
     }
-
     .project-arrow {
       font-size: 12px;
       color: var(--text-muted);
@@ -273,23 +241,19 @@
       flex-shrink: 0;
       margin-top: 1px;
     }
-
     .project-desc {
       font-size: 12px;
       color: var(--text-secondary);
       line-height: 1.65;
       margin-bottom: 12px;
     }
-
     .project-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-
     .tag-list { display: flex; gap: 4px; flex-wrap: wrap; }
-
     .tag {
       font-size: 10px;
       font-weight: 500;
@@ -298,14 +262,72 @@
       padding: 2px 8px;
       border-radius: 20px;
     }
-
     .project-date {
       font-size: 11px;
       color: var(--text-muted);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
     }
-
+    /* ── 文章列专用样式 ── */
+    .writing-card {
+      display: block;
+      padding: 18px 0;
+      border-top: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .writing-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .writing-card:first-child { border-top: none; }
+    .writing-card:hover .writing-title { color: var(--accent); }
+    .writing-card:hover .project-arrow {
+      opacity: 1;
+      transform: translate(2px, -2px);
+      color: var(--accent);
+    }
+    .writing-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .writing-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      transition: color 0.18s;
+      flex: 1;
+      letter-spacing: -0.01em;
+    }
+    .writing-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .writing-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .writing-platform {
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--tag-bg);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .writing-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
     /* ══════════════════════════
        CONTACT
     ══════════════════════════ */
@@ -318,7 +340,6 @@
       gap: 32px;
       flex-wrap: wrap;
     }
-
     .contact-label {
       font-size: 11px;
       font-weight: 600;
@@ -327,26 +348,20 @@
       color: var(--text-muted);
       margin-bottom: 14px;
     }
-
     .contact-items { display: flex; gap: 32px; flex-wrap: wrap; }
-
     .contact-item { display: flex; flex-direction: column; gap: 3px; }
-
     .contact-item-label { font-size: 11px; color: var(--text-muted); }
-
     .contact-item-value {
       font-size: 14px;
       color: var(--text-primary);
       font-weight: 500;
     }
-
     /* ── Footer ── */
     footer {
       margin-top: auto;
       padding: 20px 0 32px;
       border-top: 1px solid var(--border);
     }
-
     .footer-inner {
       display: flex;
       align-items: center;
@@ -354,8 +369,17 @@
       font-size: 12px;
       color: var(--text-muted);
     }
-
     /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr 1fr; }
+      .col:last-child {
+        grid-column: 1 / -1;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding: 48px 0 0;
+        padding-right: 0;
+      }
+    }
     @media (max-width: 640px) {
       .sticky-nav { padding: 0 20px; }
       .nav-right { gap: 12px; }
@@ -364,14 +388,22 @@
       header { padding: 48px 0 52px; }
       .main-grid { grid-template-columns: 1fr; }
       .col { padding-right: 0; }
-      .col + .col { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 48px; }
+      .col + .col {
+        padding-right: 0;
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding-top: 48px;
+      }
+      .col:last-child {
+        grid-column: auto;
+      }
       .contact-section { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 <div class="page">
-
   <!-- ══ STICKY NAV ══ -->
   <nav class="sticky-nav">
     <span class="nav-name">yulu</span>
@@ -380,7 +412,6 @@
       <a class="nav-cta" href="#contact">联系我</a>
     </div>
   </nav>
-
   <!-- ══ HEADER ══ -->
   <header>
     <div class="container">
@@ -396,9 +427,7 @@
       </div>
     </div>
   </header>
-
   <div class="divider"></div>
-
   <!-- ══ MAIN ══ -->
   <div class="container">
     <div class="main-grid" id="projects">
@@ -410,7 +439,6 @@
           <span class="col-count">4</span>
         </div>
         <div class="project-list">
-
           <a class="project-card" href="projects/project-01.html">
             <span class="project-number">01</span>
             <div class="project-card-top">
@@ -428,7 +456,6 @@
               <span class="project-date">2026</span>
             </div>
           </a>
-
           <a class="project-card" href="projects/project-02.html">
             <span class="project-number">02</span>
             <div class="project-card-top">
@@ -445,7 +472,6 @@
               <span class="project-date">2026</span>
             </div>
           </a>
-
           <a class="project-card" href="projects/project-03.html">
             <span class="project-number">03</span>
             <div class="project-card-top">
@@ -462,7 +488,6 @@
               <span class="project-date">2025</span>
             </div>
           </a>
-
           <a class="project-card" href="projects/project-04.html">
             <span class="project-number">04</span>
             <div class="project-card-top">
@@ -478,17 +503,15 @@
               <span class="project-date">2025</span>
             </div>
           </a>
-
         </div>
       </div>
 
-      <!-- 右列：个人项目 -->
+      <!-- 中列：个人项目 -->
       <div class="col">
         <div class="col-header">
           <span class="col-title">个人项目</span>
         </div>
         <div class="project-list">
-
           <a class="project-card" href="projects/sentinel.html" target="_blank">
             <span class="project-number">01</span>
             <div class="project-card-top">
@@ -504,7 +527,6 @@
               <span class="project-date">2026</span>
             </div>
           </a>
-
           <a class="project-card" href="assets/dispatch.html" target="_blank">
             <span class="project-number">02</span>
             <div class="project-card-top">
@@ -521,7 +543,6 @@
               <span class="project-date">2026</span>
             </div>
           </a>
-
           <a class="project-card" href="https://app-clq1fbv4libl.appmiaoda.com" target="_blank">
             <span class="project-number">03</span>
             <div class="project-card-top">
@@ -538,7 +559,6 @@
               <span class="project-date">2026</span>
             </div>
           </a>
-
           <a class="project-card" href="https://yululu-chen.github.io/portfolio/index.html" target="_blank">
             <span class="project-number">04</span>
             <div class="project-card-top">
@@ -554,12 +574,30 @@
               <span class="project-date">2026</span>
             </div>
           </a>
+        </div>
+      </div>
 
+      <!-- 右列：文章 -->
+      <div class="col">
+        <div class="col-header">
+          <span class="col-title">文章</span>
+        </div>
+        <div class="project-list">
+          <a class="writing-card" href="https://mp.weixin.qq.com/s/HmDKGnZKNm9k6QtUW0CJ2Q" target="_blank">
+            <div class="writing-card-top">
+              <div class="writing-title">做了半年 AI 质检，我踩过的那些坑</div>
+              <span class="project-arrow">↗</span>
+            </div>
+            <div class="writing-desc">从零搭建 AI 质检系统的真实复盘——信任机制设计、LLM 幻觉处理，以及 AI 在高风险判责场景中的边界在哪里。</div>
+            <div class="writing-meta">
+              <span class="writing-platform">微信公众号</span>
+              <span class="writing-date">2026</span>
+            </div>
+          </a>
         </div>
       </div>
 
     </div>
-
     <!-- ══ CONTACT ══ -->
     <div class="contact-section" id="contact">
       <div>
@@ -576,9 +614,7 @@
         </div>
       </div>
     </div>
-
   </div>
-
   <!-- ══ FOOTER ══ -->
   <footer>
     <div class="container">
@@ -588,15 +624,12 @@
       </div>
     </div>
   </footer>
-
 </div>
-
 <script>
   // 滚动渐入
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        // 错开出现，营造层次感
         setTimeout(() => {
           entry.target.classList.add('visible');
         }, i * 60);
@@ -604,8 +637,7 @@
       }
     });
   }, { threshold: 0.08 });
-
-  document.querySelectorAll('.project-card').forEach(card => {
+  document.querySelectorAll('.project-card, .writing-card').forEach(card => {
     observer.observe(card);
   });
 </script>
